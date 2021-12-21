@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:timetable/constants/colors.dart';
-import 'package:timetable/views/authentication/login_screen.dart';
+import 'package:timetable/providers/auth.dart';
+import 'package:timetable/views/authentication/sign_in_screen.dart';
 import 'package:timetable/views/course/course_list_screen.dart';
-import 'package:timetable/views/course/course_screen.dart';
 import 'package:timetable/views/setting/setting_screen.dart';
 import 'package:timetable/views/task/task_list_screen.dart';
 import 'package:timetable/views/timetable/timetable_screen.dart';
 
 
-class CustomDrawer extends StatelessWidget {
+class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,6 @@ class CustomDrawer extends StatelessWidget {
         Container(
           height: 250,
           child:DrawerHeader(
-
             decoration: BoxDecoration(
               color: lightblack,
             ),
@@ -44,22 +44,15 @@ class CustomDrawer extends StatelessWidget {
           leading: Icon(Icons.calendar_today, color: lightblack,),
           title: const Text('Calendar'),
           onTap: () {
-            // Update the state of the app
-
-            // Then close the drawer
-            Navigator.pop(context);
-            Navigator.pushReplacementNamed(context, TimetableScreen.id);
+            Navigator.popAndPushNamed(context, TimetableScreen.routeName);
           },
         ),
         ListTile(
           leading: Icon(Icons.school_outlined, color: lightblack,),
           title: const Text('Courses'),
           onTap: () {
-            // Update the state of the app
-            // ...
-            // Then close the drawer
-            Navigator.pop(context);
-            Navigator.pushReplacementNamed(context, CourseListScreen.id);
+            
+            Navigator.popAndPushNamed(context, CourseListScreen.routeName);
           },
         ),
         ListTile(
@@ -70,7 +63,7 @@ class CustomDrawer extends StatelessWidget {
             // ...
             // Then close the drawer
             Navigator.pop(context);
-            Navigator.pushReplacementNamed(context, TaskListScreen.id);
+            Navigator.pushReplacementNamed(context, TaskListScreen.routeName);
           },
         ),
         ListTile(
@@ -80,19 +73,16 @@ class CustomDrawer extends StatelessWidget {
             // Update the state of the app
             // ...
             // Then close the drawer
-            Navigator.pop(context);
-            Navigator.pushReplacementNamed(context, SettingScreen.id);
+            Navigator.popAndPushNamed(context, SettingScreen.routeName);
           },
         ),
         ListTile(
           leading: Icon(Icons.logout, color: lightblack,),
           title: const Text('Logout'),
           onTap: () {
-            // Update the state of the app
-            // ...
-            // Then close the drawer
-            Navigator.pop(context);
-            Navigator.pushReplacementNamed(context, LoginScreen.id);
+            Navigator.of(context).pop();
+            Navigator.pushReplacementNamed(context, SignInScreen.routeName);
+            Provider.of<Auth>(context, listen: false).logOut();
           },
         ),
       ],

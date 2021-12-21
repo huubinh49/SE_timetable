@@ -1,30 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:timetable/constants/colors.dart';
-import 'package:timetable/widgets/drawer.dart';
+import 'package:timetable/widgets/app_drawer.dart';
+import 'package:timetable/widgets/month_view_calendar.dart';
 
 class TimetableScreen extends StatelessWidget {
-  static String id = "timetable_screen";
+  static String routeName = "timetable_screen";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: CustomDrawer(),
+      drawer: AppDrawer(),
       appBar: AppBar(
         title: Text("Timetable"), //title aof appbar
         backgroundColor: mainColor,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.pending_outlined,
-              color: Colors.white,
-              size: 28,
-            ),
-            onPressed: () {
-              // do something
-            },
-          )
-        ],
         //background color of appbar
       ),
+      body: Padding(
+          padding: const EdgeInsets.only(left: 8, right: 8, top: 10),
+          child: Center(child: Column(children: [CalendarMonthView()]))),
     );
   }
 }
