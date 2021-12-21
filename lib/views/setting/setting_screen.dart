@@ -1,11 +1,11 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:timetable/constants/colors.dart';
-import 'package:timetable/widgets/drawer.dart';
+import 'package:timetable/widgets/app_drawer.dart';
 
 class SettingScreen extends StatefulWidget {
 
-  static String id = "setting_screen";
+  static String routeName = "setting_screen";
   @override
   _SettingScreenState createState() => _SettingScreenState();
 }
@@ -24,7 +24,7 @@ class _SettingScreenState extends State<SettingScreen> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
-      drawer: CustomDrawer(),
+      drawer: AppDrawer(),
       appBar: AppBar(
         title: Text("Setting"), //title aof appbar
         backgroundColor: mainColor,
