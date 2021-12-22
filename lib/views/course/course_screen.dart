@@ -37,7 +37,7 @@ class _CourseScreenState extends State<CourseScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: loadedCourse.colorItem,
+        backgroundColor: loadedCourse.color,
         actions: <Widget>[
           IconButton(
             icon: Icon(
@@ -72,7 +72,7 @@ class _CourseScreenState extends State<CourseScreen> {
                     blurRadius: 5.0,
                     spreadRadius: 1.0)
               ],
-              color: loadedCourse.colorItem,
+              color: loadedCourse.color,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,9 +80,9 @@ class _CourseScreenState extends State<CourseScreen> {
               children: [
                 Padding(
                   padding: EdgeInsets.only(bottom: 10),
-                  child: Text(loadedCourse.title, style: primaryText),
+                  child: Text(loadedCourse.name, style: primaryText),
                 ),
-                Text(loadedCourse.lecturer, style: normalText)
+                Text(loadedCourse.lecturerName, style: normalText)
               ],
             )),
         Column(
@@ -109,7 +109,7 @@ class _CourseScreenState extends State<CourseScreen> {
                       children: [
                         TextSpan(
                             text:
-                                '${loadedCourse.timeHour}:${loadedCourse.timeMinute}',
+                                '${loadedCourse.startTime ~/ 60}:${loadedCourse.startTime % 60}',
                             style: TextStyle(
                                 color: Colors.black, fontSize: 18)),
                         TextSpan(

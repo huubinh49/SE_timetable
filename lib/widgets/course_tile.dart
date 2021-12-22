@@ -5,23 +5,21 @@ import 'package:timetable/views/course/course_screen.dart';
 
 class CourseTile extends StatelessWidget {
   final String id;
-  final String title;
+  final String name;
   final String room;
   final DateTime date;
-  final int hour;
-  final int minute;
+  final int startTime;
   final int duration;
-  final Color colorItem;
+  final Color color;
 
   CourseTile({
     this.id,
-    this.title,
+    this.name,
     this.room,
     this.date,
-    this.hour,
-    this.minute,
+    this.startTime,
     this.duration,
-    this.colorItem,
+    this.color,
   });
 
   @override
@@ -47,7 +45,7 @@ class CourseTile extends StatelessWidget {
           children: [
             Container(
               width: 8,
-              color: colorItem,
+              color: color,
             ),
             Expanded(
               child: Container(
@@ -59,7 +57,7 @@ class CourseTile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(title),
+                        Text(name),
                         RichText(
                           text: TextSpan(
                             children: [
@@ -83,7 +81,7 @@ class CourseTile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('${DateFormat.E().format(date)}, ${hour}:${minute}', style: tileSecondaryText),
+                        Text('${DateFormat.E().format(date)}, ${startTime ~/ 60}:${startTime % 60}', style: tileSecondaryText),
                         Text('${(duration/60.0).toStringAsFixed(1)}h', style: tileSecondaryText),
                       ],
                     ),
