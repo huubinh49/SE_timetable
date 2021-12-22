@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:timetable/views/timetable/timetable_create_screen.dart';
+import 'package:timetable/views/timetable/timetable_edit_screen.dart';
 import '../views/splash_screen.dart';
 import 'package:timetable/views/authentication/sign_in_screen.dart';
 import 'package:timetable/views/authentication/sign_up_screen.dart';
@@ -19,4 +21,6 @@ Map<String,Widget Function(BuildContext)> routeApp = {
   SplashScreen.routeName: (context) => SplashScreen(),
   CourseScreen.routeName: (context) => CourseScreen(),
   CreateCourseScreen.routeName: (context) => CreateCourseScreen(),
+  TimeTableCreateScreen.routeName: (context) => TimeTableCreateScreen(),
+  TimeTableEditScreen.routeName: (context) => TimeTableEditScreen(),
 };

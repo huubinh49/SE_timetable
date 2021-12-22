@@ -171,8 +171,7 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                           color: Colors.white,
                           child: TextFormField(
                             initialValue: _initValues['title'],
-                            keyboardType: TextInputType.name,
-                            textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.text,
                             decoration: InputDecoration(
                               prefixIcon: Icon(
                                 Icons.title,
@@ -216,7 +215,6 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                           child: TextFormField(
                             initialValue: _initValues['lecturer'],
                             keyboardType: TextInputType.name,
-                            textInputAction: TextInputAction.none,
                             decoration: InputDecoration(
                               prefixIcon: Icon(
                                 Icons.supervisor_account,
@@ -265,7 +263,6 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                                 child: TextFormField(
                                   initialValue: _initValues['room'],
                                   keyboardType: TextInputType.streetAddress,
-                                  textInputAction: TextInputAction.none,
                                   decoration: InputDecoration(
                                     prefixIcon: Icon(
                                       Icons.location_on_outlined,
@@ -452,7 +449,6 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                                   child: TextFormField(
                                     initialValue: _initValues['duration'],
                                     keyboardType: TextInputType.number,
-                                    textInputAction: TextInputAction.none,
                                     decoration: InputDecoration(
                                       fillColor: Colors.white,
                                       filled: true,
