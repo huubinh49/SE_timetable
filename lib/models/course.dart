@@ -1,5 +1,7 @@
+import 'dart:ui';
+
+import 'package:flutter/material.dart';
 import 'package:timetable/models/abstract_thing.dart';
-import 'package:timetable/models/daos/task_dao.dart';
 
 class Course extends AbstractThing {
   /// Minutes since 00:00.
@@ -12,7 +14,7 @@ class Course extends AbstractThing {
   /// `"Sunday"`.
   ///
   /// Note: capitalized weekdays.
-  String date;
+  DateTime date = DateTime.now();
 
   /// Name of the lecturer.
   String lecturerName;
@@ -24,28 +26,21 @@ class Course extends AbstractThing {
   String note;
 
   /// HTML color code. Example: `#FF0000`.
-  String color;
+  Color color;
 
-  /// ID of the parent timetable.
-  int parentId;
-
-  /// IDs of tasks that this course has.
-  List<int> taskIds = [];
-
+  List<String> taskIds = [];
+  static const  initialDate =  DateTime;
   /// Create a new `Course` object.
-  Course(int id, String name,
-      {this.date = 'Monday',
-      this.startTime = 0,
-      this.duration = 0,
-      this.lecturerName,
-      this.room,
-      this.color,
-      this.note,
-      int timetableId})
-      : super(id, name) {
-    timetableId = timetableId;
-    taskIds = [];
-  }
+  Course(String id, String name,
+      {this.date,
+        this.startTime = 0,
+        this.duration = 0,
+        this.lecturerName,
+        this.room,
+        this.color=Colors.blue,
+        this.note,
+        this.taskIds })
+      : super(id, name);
 
   /// Load the `Course` object from the JSON object in the database (the JSON
   /// must be converted to `Map` beforehand).
@@ -53,73 +48,27 @@ class Course extends AbstractThing {
     date = map['date'];
     startTime = map['startTime'];
     duration = map['duration'];
-    parentId = map['timetableId'];
     taskIds = map['taskIds'];
-  }
-
-  /// Return a list of associated assignment IDs.
-  List<int> get assignmentIds {
-    var result = <int>[];
-    for (final id in taskIds) {
-      if (TaskDao.getInstance().getById(id).type == 'assignment') {
-        result.add(id);
-      }
-    }
-    return result;
-  }
-
-  /// Return a list of associated exam IDs.
-  List<int> get examIds {
-    var result = <int>[];
-    for (final id in taskIds) {
-      if (TaskDao.getInstance().getById(id).type == 'exam') {
-        result.add(id);
-      }
-    }
-    return result;
   }
 
   @override
   String toString() =>
-      'Course(id: $id, name: $name, date: $date, range: ${formatTime(startTime)} -> ${formatTime(startTime + duration)})';
+      'Course(id: $id, name: $name, date: $date, range: ${formatTime(
+          startTime)} -> ${formatTime(startTime + duration)})';
 
   @override
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> toMap() =>
+      {
         'id': id,
         'name': name,
-        'date': date,
+        'date': date.toIso8601String(),
         'startTime': startTime,
         'duration': duration,
         'lecturerName': lecturerName,
         'room': room,
-        'color': color,
+        'color': color.value,
         'note': note,
-        'timetableId': parentId,
-        'taskIds': taskIds
+        'taskIds': taskIds.join(", ")
       };
-/// Của Hưng
 
-class Course {
-  final String id;
-  final String title;
-  final String lecturer;
-  final String room;
-  final DateTime date;
-  final int timeHour;
-  final int timeMinute;
-  final String note;
-  final int duration;
-  final Color colorItem;
-
-  Course(
-      {this.id,
-      this.title,
-      this.lecturer,
-      this.room,
-      this.date,
-      this.timeHour,
-      this.timeMinute,
-      this.duration,
-      this.note,
-      this.colorItem});
 }

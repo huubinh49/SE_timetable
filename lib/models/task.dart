@@ -25,7 +25,7 @@ abstract class Task extends AbstractThing {
   /// ID of the parent course.
   int parentId;
 
-  Task(int id, String name, DateTime startDate, DateTime endDate,
+  Task(String id, String name, DateTime startDate, DateTime endDate,
       {this.notificationTime,
       this.topic,
       this.importantLevel = 1,

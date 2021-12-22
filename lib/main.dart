@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:timetable/providers/auth.dart';
 import 'package:timetable/routes_app/route_management.dart';
 import 'package:timetable/views/authentication/sign_in_screen.dart';
-import 'package:timetable/views/course/course_list_screen.dart';
 import 'package:timetable/providers/courses.dart';
 import 'package:timetable/views/splash_screen.dart';
 import 'package:timetable/views/timetable/timetable_screen.dart';

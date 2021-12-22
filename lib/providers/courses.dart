@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 import '../models/course.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
-// DateTime.parse(orderData['date']
-// Color(colorItem).withOpacity(1)
-
 class Courses with ChangeNotifier {
   List<Course> _items = [];
 
@@ -19,10 +15,9 @@ class Courses with ChangeNotifier {
   }
 
 
-
   Future<void> fetchAndSetDataCourses() async {
     final url = Uri.parse(
-        'https://timetable-app-60033-default-rtdb.firebaseio.com/courses.json?auth=$authToken&orderBy="userID"&equalTo="$userId"');
+        'https://timetable-app-60033-default-rtdb.firebaseio.com/user/$userId/courses.json?auth=$authToken');
     try {
       final response = await http.get(url);
       // Convert json to flutter data by json.decode()
@@ -33,16 +28,17 @@ class Courses with ChangeNotifier {
       }
       extractedData.forEach((courseId, courseData) {
         loadedCourses.add(Course(
-          id: courseId,
-          timeMinute: courseData['minutes'],
-          timeHour: courseData['hours'],
-          note: courseData['note'],
-          colorItem: Color(courseData['colorItem']).withOpacity(1),
-          lecturer: courseData['lecturer'],
-          room: courseData['room'],
+          courseId,
+          courseData['name'],
           date: DateTime.parse(courseData['date']),
+          startTime: courseData['startTime'],
           duration: courseData['duration'],
-          title: courseData['title'],
+
+          lecturerName: courseData['lecturerName'],
+          room: courseData['room'],
+          color: Color(courseData['color']).withOpacity(1),
+          note: courseData['note'],
+          taskIds: courseData['taskIds'].split(", ")
         ));
       });
       _items = loadedCourses;
@@ -55,8 +51,7 @@ class Courses with ChangeNotifier {
   // Make this function is Future to show the indicator when the user add new course and wait the response
   Future<void> addCourse(Course course) async {
     final url = Uri.parse(
-        'https://timetable-app-60033-default-rtdb.firebaseio.com/courses.json?auth=$authToken');
-    final timestamp = course.date;
+        'https://timetable-app-60033-default-rtdb.firebaseio.com/user/$userId/courses.json?auth=$authToken');
     try {
       // Define url and kind of data to post in http.post(url, kind data)
       // Convert data to json by json.encode({})
@@ -64,33 +59,33 @@ class Courses with ChangeNotifier {
         url,
         body: json.encode(
           {
-            'userID': userId,
-            'title': course.title,
+            'name': course.name,
             'duration': course.duration,
-            'colorItem': course.colorItem.value,
-            'date': timestamp.toIso8601String(),
+            'color': course.color.value,
+            'date': course.date.toIso8601String(),
             'note': course.note,
-            'lecturer': course.lecturer,
+            'lecturerName': course.lecturerName,
             'room': course.room,
-            'hours': course.timeHour,
-            'minutes': course.timeMinute,
+            'startTime': course.startTime,
+            'taskIds': course.taskIds.join(", ")
           },
         ),
       );
       // Use async function to wait for post data and get the response => Can get ID from the response
       // ID = json.decode(response.body)['name']
       final newCourse = Course(
-        id: json.decode(response.body)['name'],
-        title: course.title,
-        timeHour: course.timeHour,
-        timeMinute: course.timeMinute,
+        json.decode(response.body)['name'],
+        course.name,
+        date: course.date,
+        startTime: course.startTime,
         duration: course.duration,
-        colorItem: course.colorItem,
-        date: timestamp,
+        color: course.color,
         room: course.room,
-        lecturer: course.lecturer,
+        lecturerName: course.lecturerName,
         note: course.note,
+        taskIds: course.taskIds
       );
+      debugPrint(newCourse.id);
       _items.insert(0, newCourse);
       notifyListeners();
     } catch (error) {
@@ -103,19 +98,19 @@ class Courses with ChangeNotifier {
     final courseIndex = _items.indexWhere((value) => value.id == id);
     if (courseIndex >= 0) {
       final url = Uri.parse(
-          'https://timetable-app-60033-default-rtdb.firebaseio.com/courses/$id.json?auth=$authToken');
+          'https://timetable-app-60033-default-rtdb.firebaseio.com/user/$userId/courses/$id.json?auth=$authToken');
       final timestamp = newCourse.date;
       await http.patch(url,
           body: json.encode({
-            'title': newCourse.title,
+            'name': newCourse.name,
             'duration': newCourse.duration,
-            'colorItem': newCourse.colorItem.value,
-            'date': timestamp.toIso8601String(),
+            'color': newCourse.color.value,
+            'date': newCourse.date.toIso8601String(),
             'note': newCourse.note,
-            'lecturer': newCourse.lecturer,
+            'lecturer': newCourse.lecturerName,
             'room': newCourse.room,
-            'hours': newCourse.timeHour,
-            'minutes': newCourse.timeMinute,
+            'startTime': newCourse.startTime,
+            "taskIds": newCourse.taskIds.join(", ")
           }));
       _items[courseIndex] = newCourse;
       notifyListeners();
@@ -126,7 +121,7 @@ class Courses with ChangeNotifier {
 
   void deleteCourse(String id) {
     final url = Uri.parse(
-        'https://timetable-app-60033-default-rtdb.firebaseio.com/courses/$id.json?auth=$authToken');
+        'https://timetable-app-60033-default-rtdb.firebaseio.com/user/$userId/courses/$id.json?auth=$authToken');
     http.delete(url).then((value) {
       _items.removeWhere((course) => course.id == id);
       notifyListeners();
@@ -136,6 +131,4 @@ class Courses with ChangeNotifier {
   Course findById(String id) {
     return _items.firstWhere((value) => value.id == id);
   }
-
-
 }

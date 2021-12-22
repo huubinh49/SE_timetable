@@ -24,7 +24,6 @@
                             "room": "https://zoom.us/...",
                             "color": "#FF00AA",
                             "note": null,
-                            "parentId": 0,
                             "taskIds": [3, 4, 9, 10]
                         }
                     ],

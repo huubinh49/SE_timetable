@@ -4,7 +4,7 @@ class Assignment extends Task {
   int progress;
   bool isGroupProject;
 
-  Assignment(int id, String name, DateTime startDate, DateTime endDate,
+  Assignment(String id, String name, DateTime startDate, DateTime endDate,
       {DateTime notificationTime,
       String topic,
       int importantLevel = 1,

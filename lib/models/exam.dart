@@ -3,7 +3,7 @@ import 'package:timetable/models/task.dart';
 class Exam extends Task {
   String room;
 
-  Exam(int id, String name, DateTime startDate, DateTime endDate,
+  Exam(String id, String name, DateTime startDate, DateTime endDate,
       {DateTime notificationTime,
       String topic,
       int importantLevel,

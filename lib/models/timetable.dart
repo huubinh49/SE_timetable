@@ -8,12 +8,12 @@ class Timetable extends AbstractThing {
   DateTime endDate = DateTime.now();
 
   /// IDs of courses associated to this timetable.
-  List<int> courseIds = [];
+  List<String> courseIds = [];
 
   /// Create a new `Timetable` object
   ///
   /// `startDate` and `endDate` are default to `DateTime.now()` if not supplied
-  Timetable(int id, String name, {DateTime startDate, DateTime endDate})
+  Timetable(String id, String name, {DateTime startDate, DateTime endDate})
       : assert(startDate.compareTo(endDate) < 0),
         super(id, name) {
     if (startDate != null) {
@@ -31,7 +31,7 @@ class Timetable extends AbstractThing {
     name = map['name'];
     startDate = DateTime.parse(map['startDate']);
     endDate = DateTime.parse(map['endDate']);
-    courseIds = List<int>.from(map['courseIds']);
+    courseIds = List<String>.from(map['courseIds']);
   }
 
   @override

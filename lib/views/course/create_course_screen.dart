@@ -40,21 +40,20 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
   String courseId;
 
   var _createCourse = Course(
-      id: null,
+      null,
+      '',
       room: '',
-      date: DateTime.now(),
-      colorItem: null,
+      date: null,
+      color: null,
       duration: 0,
-      title: '',
-      timeHour: DateTime.now().hour,
-      timeMinute: DateTime.now().minute,
-      lecturer: '');
+      startTime: null,
+      lecturerName: '', taskIds: []);
 
   var _isInit = true;
 
   var _initValues = {
-    'title': '',
-    'lecturer': '',
+    'name': '',
+    'lecturerName': '',
     'room': '',
     'duration': '',
     'note': ''
@@ -68,17 +67,21 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
         _createCourse =
             Provider.of<Courses>(context, listen: false).findById(courseId);
         _initValues = {
-          'title': _createCourse.title,
-          'lecturer': _createCourse.lecturer,
+          'name': _createCourse.name,
+          'lecturerName': _createCourse.lecturerName,
           'room': _createCourse.room,
           'duration': _createCourse.duration.toString(),
           'note': _createCourse.note,
         };
-        colorChoose = _createCourse.colorItem;
-        time = TimeOfDay(
-            hour: _createCourse.timeHour, minute: _createCourse.timeMinute);
-        date = _createCourse.date;
+
+      }else{
+        _createCourse.startTime = TimeOfDay.now().hour*60 +TimeOfDay.now().minute;
+        _createCourse.date = DateTime.now();
+        _createCourse.color = Colors.blue;
       }
+      colorChoose = _createCourse.color;
+      date = _createCourse.date;
+      time = TimeOfDay(hour: _createCourse.startTime ~/ 60, minute: _createCourse.startTime % 60);
     }
     _isInit = false;
     super.didChangeDependencies();
@@ -98,9 +101,9 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
           .updateCourse(_createCourse.id, _createCourse);
     } else {
       try {
-        await Provider.of<Courses>(context, listen: false)
-            .addCourse(_createCourse);
+        await Provider.of<Courses>(context, listen: false).addCourse(_createCourse);
       } catch (error) {
+
         await showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
@@ -111,7 +114,7 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).errorColor),
             ),
-            content: Text('Something went wrong!\nPlease try it later!'),
+            content: Text('Something went wrong!\nPlease try it later! ${error}'),
             actions: [
               FlatButton(
                   onPressed: () {
@@ -137,7 +140,7 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
     return Scaffold(
       backgroundColor: Color(0xfffffcf0),
       appBar: AppBar(
-        title: Text("Create Course"), //title of appbar
+        title: courseId==null? Text("Create Course"): Text("Edit Course"), //title of appbar
         backgroundColor: mainColor,
         actions: <Widget>[
           IconButton(
@@ -170,7 +173,7 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                           padding: EdgeInsets.symmetric(vertical: 5),
                           color: Colors.white,
                           child: TextFormField(
-                            initialValue: _initValues['title'],
+                            initialValue: _initValues['name'],
                             keyboardType: TextInputType.name,
                             textInputAction: TextInputAction.next,
                             decoration: InputDecoration(
@@ -195,17 +198,7 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                               return null;
                             },
                             onSaved: (value) {
-                              _createCourse = Course(
-                                  id: _createCourse.id,
-                                  title: value,
-                                  timeHour: _createCourse.timeHour,
-                                  timeMinute: _createCourse.timeMinute,
-                                  lecturer: _createCourse.lecturer,
-                                  duration: _createCourse.duration,
-                                  colorItem: _createCourse.colorItem,
-                                  note: _createCourse.note,
-                                  date: _createCourse.date,
-                                  room: _createCourse.room);
+                              _createCourse.name = value;
                             },
                           ),
                         ),
@@ -214,7 +207,7 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                           padding: EdgeInsets.symmetric(vertical: 5),
                           color: Colors.white,
                           child: TextFormField(
-                            initialValue: _initValues['lecturer'],
+                            initialValue: _initValues['lecturerName'],
                             keyboardType: TextInputType.name,
                             textInputAction: TextInputAction.none,
                             decoration: InputDecoration(
@@ -240,17 +233,7 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                               return null;
                             },
                             onSaved: (value) {
-                              _createCourse = Course(
-                                  id: _createCourse.id,
-                                  title: _createCourse.title,
-                                  timeHour: _createCourse.timeHour,
-                                  timeMinute: _createCourse.timeMinute,
-                                  lecturer: value,
-                                  note: _createCourse.note,
-                                  duration: _createCourse.duration,
-                                  colorItem: _createCourse.colorItem,
-                                  date: _createCourse.date,
-                                  room: _createCourse.room);
+                              _createCourse.lecturerName = value;
                             },
                           ),
                         ),
@@ -291,17 +274,7 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                                     return null;
                                   },
                                   onSaved: (value) {
-                                    _createCourse = Course(
-                                        id: _createCourse.id,
-                                        title: _createCourse.title,
-                                        timeHour: _createCourse.timeHour,
-                                        timeMinute: _createCourse.timeMinute,
-                                        lecturer: _createCourse.lecturer,
-                                        note: _createCourse.note,
-                                        duration: _createCourse.duration,
-                                        colorItem: _createCourse.colorItem,
-                                        date: _createCourse.date,
-                                        room: value);
+                                    _createCourse.room = value;
                                   },
                                 ),
                               ),
@@ -317,31 +290,16 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                                     height: 40,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        primary: colorChoose == null
-                                            ? Colors.blue
-                                            : colorChoose,
+                                        primary: colorChoose,
                                         shape: CircleBorder(), // background
                                       ),
                                       onPressed: () {
                                         showMaterialSwatchPicker(
                                           context: context,
-                                          selectedColor: colorChoose == null
-                                              ? Colors.blue
-                                              : colorChoose,
+                                          selectedColor: Colors.blue,
                                           onChanged: (value) => setState(() {
                                             colorChoose = value;
-                                            _createCourse = Course(
-                                              id: null,
-                                              lecturer: _createCourse.lecturer,
-                                              room: _createCourse.room,
-                                              date: _createCourse.date,
-                                              colorItem: value,
-                                              duration: _createCourse.duration,
-                                              timeHour: _createCourse.timeHour,
-                                              timeMinute:
-                                                  _createCourse.timeMinute,
-                                              title: _createCourse.title,
-                                            );
+                                            _createCourse.color = colorChoose;
                                           }),
                                         );
                                       },
@@ -366,7 +324,7 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                                 color: Colors.black),
                             label: Text(
                               DateFormat("yyyy-MM-dd")
-                                  .format(date == null ? DateTime.now() : date),
+                                  .format(date),
                               style: TextStyle(color: Colors.black),
                             ),
                             onPressed: () {
@@ -377,21 +335,10 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                                 lastDate: DateTime.now()
                                     .add(Duration(days: 2021 * 10)),
                                 context: context,
-                                selectedDate:
-                                    date == null ? DateTime.now() : date,
+                                selectedDate: date ,
                                 onChanged: (value) => setState(() {
                                   date = value;
-                                  _createCourse = Course(
-                                    id: _createCourse.id,
-                                    lecturer: _createCourse.lecturer,
-                                    room: _createCourse.room,
-                                    date: value,
-                                    colorItem: _createCourse.colorItem,
-                                    duration: _createCourse.duration,
-                                    timeHour: _createCourse.timeHour,
-                                    timeMinute: _createCourse.timeMinute,
-                                    title: _createCourse.title,
-                                  );
+                                  _createCourse.date= date;
                                 }),
                               );
                             },
@@ -414,27 +361,14 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                                           MaterialStateProperty.all(
                                               Colors.redAccent)),
                                   icon: Icon(Icons.access_time),
-                                  label: Text(time == null
-                                      ? TimeOfDay.now().format(context)
-                                      : time.format(context)),
+                                  label: Text(time.format(context)),
                                   onPressed: () {
                                     showMaterialTimePicker(
                                       context: context,
-                                      selectedTime:
-                                          time == null ? TimeOfDay.now() : time,
+                                      selectedTime:time,
                                       onChanged: (value) => setState(() {
                                         time = value;
-                                        _createCourse = Course(
-                                          id: _createCourse.id,
-                                          lecturer: _createCourse.lecturer,
-                                          room: _createCourse.room,
-                                          date: _createCourse.date,
-                                          colorItem: _createCourse.colorItem,
-                                          duration: _createCourse.duration,
-                                          title: _createCourse.title,
-                                          timeHour: value.hour,
-                                          timeMinute: value.minute,
-                                        );
+                                        _createCourse.startTime = value.hour * 60 + value.minute;
                                       }),
                                     );
                                   },
@@ -474,18 +408,7 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                                       return null;
                                     },
                                     onSaved: (value) {
-                                      _createCourse = Course(
-                                        id: _createCourse.id,
-                                        lecturer: _createCourse.lecturer,
-                                        room: _createCourse.room,
-                                        date: _createCourse.date,
-                                        note: _createCourse.note,
-                                        colorItem: _createCourse.colorItem,
-                                        duration: int.parse(value),
-                                        timeHour: _createCourse.timeHour,
-                                        timeMinute: _createCourse.timeMinute,
-                                        title: _createCourse.title,
-                                      );
+                                      _createCourse.duration =  int.parse(value);
                                     },
                                   ),
                                 ),
@@ -516,22 +439,11 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                             ),
                             style: TextStyle(fontSize: 16, color: Colors.black),
                             onSaved: (value) {
-                              _createCourse = Course(
-                                id: _createCourse.id,
-                                lecturer: _createCourse.lecturer,
-                                room: _createCourse.room,
-                                date: _createCourse.date,
-                                note: value,
-                                colorItem: _createCourse.colorItem,
-                                duration: _createCourse.duration,
-                                timeHour: _createCourse.timeHour,
-                                timeMinute: _createCourse.timeMinute,
-                                title: _createCourse.title,
-                              );
+                              _createCourse.note = value;
                             },
                           ),
                         ),
-                        FlatButton(
+                        courseId==null ? SizedBox(): FlatButton(
                             onPressed: () async {
                               final chooseOption = await showDialog(
                                 context: context,
