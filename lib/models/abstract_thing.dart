@@ -3,10 +3,10 @@ import 'package:intl/intl.dart';
 /// Abstract base class for Timetable, Course and Task.
 abstract class AbstractThing {
   /// Unique ID within the app
-  final int _id;
+  final String _id;
   String name;
 
-  int get id => _id;
+  String get id => _id;
 
   AbstractThing(this._id, this.name);
 

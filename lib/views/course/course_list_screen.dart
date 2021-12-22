@@ -25,10 +25,11 @@ class _CourseListScreenState extends State<CourseListScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<Courses>(context).fetchAndSetDataCourses().then((_) {
+      Provider.of<Courses>(context).fetchAndSetDataCourses().catchError((error) => {
+      }).whenComplete(() => {
         setState(() {
           _isLoading = false;
-        });
+        })
       });
     }
     _isInit = false;
@@ -52,13 +53,12 @@ class _CourseListScreenState extends State<CourseListScreen> {
             children: [
               CourseTile(
                 id: courseData.items[i].id,
-                title: courseData.items[i].title,
+                name: courseData.items[i].name,
                 duration: courseData.items[i].duration,
-                colorItem: courseData.items[i].colorItem,
+                color: courseData.items[i].color,
                 date: courseData.items[i].date,
                 room: courseData.items[i].room,
-                hour: courseData.items[i].timeHour,
-                minute: courseData.items[i].timeMinute,
+                startTime: courseData.items[i].startTime,
               ),
               Divider(),
             ],
