@@ -173,6 +173,7 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                           padding: EdgeInsets.symmetric(vertical: 5),
                           color: Colors.white,
                           child: TextFormField(
+
                             initialValue: _initValues['name'],
                             keyboardType: TextInputType.name,
                             textInputAction: TextInputAction.next,
@@ -209,7 +210,6 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                           child: TextFormField(
                             initialValue: _initValues['lecturerName'],
                             keyboardType: TextInputType.name,
-                            textInputAction: TextInputAction.none,
                             decoration: InputDecoration(
                               prefixIcon: Icon(
                                 Icons.supervisor_account,
@@ -248,7 +248,6 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                                 child: TextFormField(
                                   initialValue: _initValues['room'],
                                   keyboardType: TextInputType.streetAddress,
-                                  textInputAction: TextInputAction.none,
                                   decoration: InputDecoration(
                                     prefixIcon: Icon(
                                       Icons.location_on_outlined,
@@ -386,7 +385,6 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                                   child: TextFormField(
                                     initialValue: _initValues['duration'],
                                     keyboardType: TextInputType.number,
-                                    textInputAction: TextInputAction.none,
                                     decoration: InputDecoration(
                                       fillColor: Colors.white,
                                       filled: true,

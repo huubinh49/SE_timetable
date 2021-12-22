@@ -35,16 +35,17 @@ class MyApp extends StatelessWidget {
               visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
             debugShowCheckedModeBanner: false,
-            home: auth.isAuth
-                ? TimetableScreen()
-                : FutureBuilder(
-                    future: auth.tryAutoLogin(),
-                    builder: (ctx, authResultSnapshot) =>
-                        authResultSnapshot.connectionState ==
-                                ConnectionState.waiting
-                            ? SplashScreen()
-                            : SignInScreen(),
-                  ),
+            // home: auth.isAuth
+            //     ? TimetableScreen()
+            //     : FutureBuilder(
+            //         future: auth.tryAutoLogin(),
+            //         builder: (ctx, authResultSnapshot) =>
+            //             authResultSnapshot.connectionState ==
+            //                     ConnectionState.waiting
+            //                 ? SplashScreen()
+            //                 : SignInScreen(),
+            //       ),
+            home: TimetableScreen(),
             routes: routeApp,
           ),
         ));
