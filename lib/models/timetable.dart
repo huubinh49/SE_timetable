@@ -27,11 +27,18 @@ class Timetable extends AbstractThing {
   /// Load the `Timetable` object from the JSON object in the database (the JSON
   /// must be converted to `Map` beforehand).
   @override
-  Timetable.fromMap(Map<String, dynamic> map) : super(map['id'], map['name']) {
-    name = map['name'];
-    startDate = DateTime.parse(map['startDate']);
-    endDate = DateTime.parse(map['endDate']);
-    courseIds = List<String>.from(map['courseIds']);
+  // Timetable.fromMap(Map<String, dynamic> map) : super(map['id'], map['name']) {
+  //   name = map['name'];
+  //   startDate = DateTime.parse(map['startDate']);
+  //   endDate = DateTime.parse(map['endDate']);
+  //   courseIds = List<int>.from(map['courseIds']);
+  // }
+
+  Timetable.fromMap(String id, Map<String, dynamic> body) : super(id, "dummy") {
+    super.name = body['name'];
+    startDate = DateTime.parse(body['startDate']);
+    endDate = DateTime.parse(body['endDate']);
+    courseIds = body['courseIds'];
   }
 
   @override
@@ -41,11 +48,21 @@ class Timetable extends AbstractThing {
   @override
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
+      '$id': {
+        'name': name,
+        'startDate': formatDate(startDate),
+        'endDate': formatDate(endDate),
+        'courseIds': List.from(courseIds)
+      }
+    };
+  }
+
+  Map<String, dynamic> bodyToMap() {
+    return {
       'name': name,
-      'startDate': formatDate(startDate),
-      'endDate': formatDate(endDate),
-      'courseIds': List.from(courseIds)
+      'startDate': startDate.toIso8601String(),
+      'endDate': endDate.toIso8601String(),
+      'courseIds': courseIds
     };
   }
 }
