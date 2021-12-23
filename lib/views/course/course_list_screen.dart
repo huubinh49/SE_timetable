@@ -8,7 +8,6 @@ import 'create_course_screen.dart';
 
 class CourseListScreen extends StatefulWidget {
   static String routeName = "course_list_screen";
-
   @override
   State<CourseListScreen> createState() => _CourseListScreenState();
 }

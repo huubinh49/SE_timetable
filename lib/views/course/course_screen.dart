@@ -17,7 +17,6 @@ class _CourseScreenState extends State<CourseScreen> {
   var courseId;
   var loadedCourse;
 
-
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -45,9 +44,8 @@ class _CourseScreenState extends State<CourseScreen> {
               color: Colors.white,
             ),
             onPressed: () {
-             Navigator.of(context).pushNamed(
-                      CreateCourseScreen.routeName,
-                      arguments: courseId);
+              Navigator.of(context)
+                  .pushNamed(CreateCourseScreen.routeName, arguments: courseId);
             },
           )
         ],
@@ -55,109 +53,112 @@ class _CourseScreenState extends State<CourseScreen> {
       ),
       body: SingleChildScrollView(
         child: Center(
-        child: Column(children: [
-        Container(
-            padding: EdgeInsets.all(20.0),
-            width: double.infinity,
-            height: 260,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(10.0),
-                bottomRight: Radius.circular(10.0),
-              ),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.grey[400],
-                    offset: Offset(5, 5),
-                    blurRadius: 5.0,
-                    spreadRadius: 1.0)
-              ],
-              color: loadedCourse.color,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(bottom: 10),
-                  child: Text(loadedCourse.name, style: primaryText),
-                ),
-                Text(loadedCourse.lecturerName, style: normalText)
-              ],
-            )),
-        Column(
-            children: [
-          Row(
-            children: [
-              Icon(
-                Icons.access_time,
-                size: 32,
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    DateFormat('EEEE').format(loadedCourse.date),
-                    style: TextStyle(color: Colors.black, fontSize: 18),
+          child: Column(children: [
+            Container(
+                padding: EdgeInsets.all(20.0),
+                width: double.infinity,
+                height: 260,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(10.0),
+                    bottomRight: Radius.circular(10.0),
                   ),
-                  SizedBox(height: 5),
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                            text:
-                                '${loadedCourse.startTime ~/ 60}:${loadedCourse.startTime % 60}',
-                            style: TextStyle(
-                                color: Colors.black, fontSize: 18)),
-                        TextSpan(
-                            text:
-                                '  (${(loadedCourse.duration / 60.0).toStringAsFixed(1)} hours)',
-                            style: TextStyle(
-                                color: Colors.black, fontSize: 18)),
-                      ],
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.grey[400],
+                        offset: Offset(5, 5),
+                        blurRadius: 5.0,
+                        spreadRadius: 1.0)
+                  ],
+                  color: loadedCourse.color,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 10),
+                      child: Text(loadedCourse.name, style: primaryText),
                     ),
+                    Text(loadedCourse.lecturerName, style: normalText)
+                  ],
+                )),
+            Column(
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.access_time,
+                      size: 32,
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          DateFormat('EEEE').format(loadedCourse.date),
+                          style: TextStyle(color: Colors.black, fontSize: 18),
+                        ),
+                        SizedBox(height: 5),
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                  text:
+                                      '${loadedCourse.startTime ~/ 60}:${loadedCourse.startTime % 60}',
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 18)),
+                              TextSpan(
+                                  text:
+                                      '  (${(loadedCourse.duration / 60.0).toStringAsFixed(1)} hours)',
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 18)),
+                            ],
+                          ),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.location_on_outlined,
+                      size: 32,
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Text(loadedCourse.room,
+                        style: TextStyle(color: Colors.black, fontSize: 18))
+                  ],
+                ),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.note_outlined,
+                      size: 32,
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Text(loadedCourse.note,
+                        style: TextStyle(color: Colors.black, fontSize: 18))
+                  ],
+                ),
+              ]
+                  .map(
+                    (c) => Container(
+                        padding: EdgeInsets.all(20.0),
+                        height: 90,
+                        width: double.infinity,
+                        child: c),
                   )
-                ],
-              )
-            ],
-          ),
-          Row(
-            children: [
-              Icon(
-                Icons.location_on_outlined,
-                size: 32,
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              Text(loadedCourse.room,
-                  style: TextStyle(color: Colors.black, fontSize: 18))
-            ],
-          ),
-          Row(
-            children: [
-              Icon(
-                Icons.note_outlined,
-                size: 32,
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              Text(loadedCourse.note,
-                  style: TextStyle(color: Colors.black, fontSize: 18))
-            ],
-          )
-        ]
-                .map((c) => Container(
-                    padding: EdgeInsets.all(20.0),
-                    height: 90,
-                    width: double.infinity,
-                    child: c))
-                .toList())
-        ]),
+                  .toList(),
+            ),
+          ]),
         ),
       ),
     );
