@@ -4,6 +4,7 @@ import 'package:timetable/providers/auth.dart';
 import 'package:timetable/routes_app/route_management.dart';
 import 'package:timetable/views/authentication/sign_in_screen.dart';
 import 'package:timetable/providers/courses.dart';
+import 'package:timetable/providers/timetables.dart';
 import 'package:timetable/views/splash_screen.dart';
 import 'package:timetable/views/timetable/timetable_screen.dart';
 
@@ -26,6 +27,10 @@ class MyApp extends StatelessWidget {
                 auth.userId,
                 previousCourses == null ? [] : previousCourses.items),
           ),
+          ChangeNotifierProxyProvider<Auth, Timetables>(
+              create: (context) => Timetables('', '', []),
+              update: (context, auth, timetable) =>
+                  timetable..updateAuth(auth.token, auth.userId))
         ],
         child: Consumer<Auth>(
           builder: (ctx, auth, _) => MaterialApp(

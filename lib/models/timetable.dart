@@ -14,8 +14,7 @@ class Timetable extends AbstractThing {
   ///
   /// `startDate` and `endDate` are default to `DateTime.now()` if not supplied
   Timetable(String id, String name, {DateTime startDate, DateTime endDate})
-      : assert(startDate.compareTo(endDate) < 0),
-        super(id, name) {
+      : super(id, name) {
     if (startDate != null) {
       this.startDate = startDate;
     }
@@ -24,21 +23,12 @@ class Timetable extends AbstractThing {
     }
   }
 
-  /// Load the `Timetable` object from the JSON object in the database (the JSON
-  /// must be converted to `Map` beforehand).
-  @override
-  // Timetable.fromMap(Map<String, dynamic> map) : super(map['id'], map['name']) {
-  //   name = map['name'];
-  //   startDate = DateTime.parse(map['startDate']);
-  //   endDate = DateTime.parse(map['endDate']);
-  //   courseIds = List<int>.from(map['courseIds']);
-  // }
-
   Timetable.fromMap(String id, Map<String, dynamic> body) : super(id, "dummy") {
     super.name = body['name'];
     startDate = DateTime.parse(body['startDate']);
     endDate = DateTime.parse(body['endDate']);
-    courseIds = body['courseIds'];
+    courseIds =
+        body['courseIds'] == null ? [] : List<String>.from(body['courseIds']);
   }
 
   @override
@@ -50,9 +40,9 @@ class Timetable extends AbstractThing {
     return {
       '$id': {
         'name': name,
-        'startDate': formatDate(startDate),
-        'endDate': formatDate(endDate),
-        'courseIds': List.from(courseIds)
+        'startDate': startDate.toIso8601String(),
+        'endDate': endDate.toIso8601String(),
+        'courseIds': courseIds
       }
     };
   }

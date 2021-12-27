@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:timetable/widgets/course_tile.dart';
+import 'package:timetable/providers/timetables.dart';
 
 class TimeTableEditScreen extends StatefulWidget {
   static const routeName = 'timetable-edit-screen';
@@ -15,7 +17,7 @@ class _TimeTableEditScreenState extends State<TimeTableEditScreen> {
   bool valueCheckBox2 = false;
   bool valueCheckBox3 = false;
 
-  void _editTimeTable(){
+  void _editTimeTable() {
     final isValid = _formKey.currentState.validate();
     if (!isValid) {
       return;
@@ -94,14 +96,14 @@ class _TimeTableEditScreenState extends State<TimeTableEditScreen> {
                     children: [
                       Expanded(
                           child: CourseTile(
-                            name: 'OOP',
-                            color: Colors.redAccent,
-                            room: 'F102',
-                            date: DateTime.now(),
-                            startTime: 12,
-                            id: DateTime.now().toString(),
-                            duration: 120,
-                          )),
+                        name: 'OOP',
+                        color: Colors.redAccent,
+                        room: 'F102',
+                        date: DateTime.now(),
+                        startTime: 12 * 60 + 30,
+                        id: DateTime.now().toString(),
+                        duration: 120,
+                      )),
                       SizedBox(width: 10), //SizedBox
                       Transform.scale(
                         scale: 1.5,
@@ -122,14 +124,14 @@ class _TimeTableEditScreenState extends State<TimeTableEditScreen> {
                     children: [
                       Expanded(
                           child: CourseTile(
-                            name: 'Computer Network',
-                            color: Colors.green,
-                            room: 'F102',
-                            date: DateTime.now(),
-                            startTime: 10,
-                            id: DateTime.now().toString(),
-                            duration: 120,
-                          )),
+                        name: 'Computer Network',
+                        color: Colors.green,
+                        room: 'F102',
+                        date: DateTime.now(),
+                        startTime: 10 * 60 + 30,
+                        id: DateTime.now().toString(),
+                        duration: 120,
+                      )),
                       SizedBox(width: 10), //SizedBox
                       Transform.scale(
                         scale: 1.5,
@@ -150,14 +152,14 @@ class _TimeTableEditScreenState extends State<TimeTableEditScreen> {
                     children: [
                       Expanded(
                           child: CourseTile(
-                            name: 'Math',
-                            color: Colors.deepPurple,
-                            room: 'F102',
-                            date: DateTime.now(),
-                            startTime: 10,
-                            id: DateTime.now().toString(),
-                            duration: 120,
-                          )),
+                        name: 'Math',
+                        color: Colors.deepPurple,
+                        room: 'F102',
+                        date: DateTime.now(),
+                        startTime: 10 * 60 + 30,
+                        id: DateTime.now().toString(),
+                        duration: 120,
+                      )),
                       SizedBox(width: 10), //SizedBox
                       Transform.scale(
                         scale: 1.5,
@@ -177,22 +179,23 @@ class _TimeTableEditScreenState extends State<TimeTableEditScreen> {
                   SizedBox(
                     height: 40,
                   ),
-                  Center(child: FlatButton(
-                    onPressed: () {},
-                    child: Text(
-                      "DELETE",
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFFC20000),
+                  Center(
+                    child: FlatButton(
+                      onPressed: () {},
+                      child: Text(
+                        "DELETE",
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFFC20000),
+                        ),
                       ),
                     ),
-                  ),),
+                  ),
                 ],
               ),
             ),
           ),
-        )
-    );
+        ));
   }
 }

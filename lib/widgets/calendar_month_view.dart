@@ -29,7 +29,7 @@ final _kEventSource = Map.fromIterable(List.generate(40, (index) => index),
     key: (item) => DateTime.utc(kFirstDay.year, kFirstDay.month, item * 5),
     value: (item) => List.generate(
         item % 4 + 1,
-            (index) => Event(
+        (index) => Event(
             'Event $item | ${index + 1}',
             'Online',
             DateTime.utc(kFirstDay.year, kFirstDay.month, item * 5),
@@ -51,7 +51,7 @@ List<DateTime> daysInRange(DateTime first, DateTime last) {
   final dayCount = last.difference(first).inDays + 1;
   return List.generate(
     dayCount,
-        (index) => DateTime.utc(first.year, first.month, first.day + index),
+    (index) => DateTime.utc(first.year, first.month, first.day + index),
   );
 }
 
@@ -75,6 +75,7 @@ class _CalendarMonthViewState extends State<CalendarMonthView> {
 
   @override
   void initState() {
+    print('CalendarMonthView::initState');
     super.initState();
     _focusedDay = DateTime.now();
     _selectedDay = _focusedDay;
@@ -83,6 +84,7 @@ class _CalendarMonthViewState extends State<CalendarMonthView> {
 
   @override
   void dispose() {
+    print('CalendarMonthView::dispose');
     _selectedEvents.dispose();
     super.dispose();
   }
@@ -157,7 +159,7 @@ class _CalendarMonthViewState extends State<CalendarMonthView> {
             markerMargin: const EdgeInsets.only(right: 3),
             canMarkersOverflow: false,
             selectedDecoration:
-            BoxDecoration(color: mainColor, shape: BoxShape.rectangle),
+                BoxDecoration(color: mainColor, shape: BoxShape.rectangle),
             todayDecoration: BoxDecoration(color: Colors.green),
             withinRangeDecoration: BoxDecoration(
                 color: Colors.black,
@@ -231,13 +233,13 @@ class _CalendarMonthViewState extends State<CalendarMonthView> {
                                   padding: EdgeInsets.only(left: 15, right: 15),
                                   child: Row(
                                     mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Column(
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                         mainAxisAlignment:
-                                        MainAxisAlignment.center,
+                                            MainAxisAlignment.center,
                                         children: [
                                           Text('${value[index].title}'),
                                           RichText(
@@ -246,9 +248,9 @@ class _CalendarMonthViewState extends State<CalendarMonthView> {
                                                 WidgetSpan(
                                                   child: Padding(
                                                     padding:
-                                                    const EdgeInsets.only(
-                                                        right: 2.0,
-                                                        left: 0),
+                                                        const EdgeInsets.only(
+                                                            right: 2.0,
+                                                            left: 0),
                                                     child: Icon(
                                                       Icons
                                                           .location_on_outlined,
@@ -258,7 +260,7 @@ class _CalendarMonthViewState extends State<CalendarMonthView> {
                                                 ),
                                                 TextSpan(
                                                     text:
-                                                    '${value[index].location}',
+                                                        '${value[index].location}',
                                                     style: tileSecondaryText),
                                               ],
                                             ),
@@ -267,15 +269,15 @@ class _CalendarMonthViewState extends State<CalendarMonthView> {
                                       ),
                                       Column(
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.end,
+                                            CrossAxisAlignment.end,
                                         mainAxisAlignment:
-                                        MainAxisAlignment.center,
+                                            MainAxisAlignment.center,
                                         children: [
                                           Row(
                                             children: [
                                               Text(
                                                 DateFormat("EEE").format(
-                                                    value[index].date) +
+                                                        value[index].date) +
                                                     ", ",
                                                 style: tileSecondaryText,
                                               ),
