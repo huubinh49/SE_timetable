@@ -3,9 +3,13 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:provider/provider.dart';
+
 import 'package:timetable/constants/colors.dart';
 import 'package:timetable/constants/texts.dart';
 import 'package:timetable/views/course/course_screen.dart';
+import 'package:timetable/providers/courses.dart';
+import 'package:timetable/providers/timetables.dart';
 
 class Event {
   final String title;
@@ -19,28 +23,6 @@ class Event {
   @override
   String toString() => title;
 }
-
-final kEvents = LinkedHashMap<DateTime, List<Event>>(
-  equals: isSameDay,
-  hashCode: getHashCode,
-)..addAll(_kEventSource);
-
-final _kEventSource = Map.fromIterable(List.generate(40, (index) => index),
-    key: (item) => DateTime.utc(kFirstDay.year, kFirstDay.month, item * 5),
-    value: (item) => List.generate(
-        item % 4 + 1,
-        (index) => Event(
-            'Event $item | ${index + 1}',
-            'Online',
-            DateTime.utc(kFirstDay.year, kFirstDay.month, item * 5),
-            TimeOfDay.now(),
-            50)))
-  ..addAll({
-    kToday: [
-      Event('Today\'s Event 1', 'Online', DateTime.now(), TimeOfDay.now(), 50),
-      Event('Today\'s Event 2', 'Online', DateTime.now(), TimeOfDay.now(), 50),
-    ],
-  });
 
 int getHashCode(DateTime key) {
   return key.day * 1000000 + key.month * 10000 + key.year;
@@ -60,6 +42,10 @@ final kFirstDay = DateTime(kToday.year, kToday.month - 3, kToday.day);
 final kLastDay = DateTime(kToday.year, kToday.month + 3, kToday.day);
 
 class CalendarMonthView extends StatefulWidget {
+  final String timetableId;
+
+  CalendarMonthView(this.timetableId);
+
   @override
   State<CalendarMonthView> createState() => _CalendarMonthViewState();
 }
@@ -72,6 +58,10 @@ class _CalendarMonthViewState extends State<CalendarMonthView> {
   DateTime _selectedDay;
   DateTime _rangeStart;
   DateTime _rangeEnd;
+  bool _isFirstBuilt;
+
+  LinkedHashMap<DateTime, List<Event>> kEvents;
+  Map<DateTime, List<Event>> _kEventSource;
 
   @override
   void initState() {
@@ -79,7 +69,8 @@ class _CalendarMonthViewState extends State<CalendarMonthView> {
     super.initState();
     _focusedDay = DateTime.now();
     _selectedDay = _focusedDay;
-    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay));
+    _isFirstBuilt = true;
+    // _selectedEvents = ValueNotifier([]);
   }
 
   @override
@@ -138,6 +129,59 @@ class _CalendarMonthViewState extends State<CalendarMonthView> {
 
   @override
   Widget build(BuildContext context) {
+    var courseIds =
+        Provider.of<Timetables>(context).findById(widget.timetableId).courseIds;
+    var courses = List.generate(courseIds.length,
+        (index) => Provider.of<Courses>(context).findById(courseIds[index]));
+
+    var weekDayMap = Map.fromIterable(List.generate(7, (index) => index + 1),
+        key: (element) => element.toString(), value: (element) => []);
+
+    for (final c in courses) {
+      weekDayMap[c.date.weekday.toString()].add(c);
+    }
+
+    _kEventSource = Map.fromIterable(daysInRange(kFirstDay, kLastDay),
+        key: (element) => element,
+        value: (element) => weekDayMap[element.weekday.toString()]
+            .map((e) => Event(
+                e.name,
+                e.room,
+                e.date,
+                TimeOfDay(hour: e.startTime ~/ 60, minute: e.startTime % 60),
+                e.duration))
+            .toList());
+
+    print('_kEventSource: $_kEventSource');
+    // _kEventSource = Map.fromIterable(List.generate(40, (index) => index),
+    //     key: (item) => DateTime.utc(kFirstDay.year, kFirstDay.month, item * 5),
+    //     value: (item) => List.generate(
+    //         item % 4 + 1,
+    //         (index) => Event(
+    //             'Event $item | ${index + 1}',
+    //             'Online',
+    //             DateTime.utc(kFirstDay.year, kFirstDay.month, item * 5),
+    //             TimeOfDay.now(),
+    //             50)))
+    //   ..addAll({
+    //     kToday: [
+    //       Event('Today\'s Event 1', 'Online', DateTime.now(), TimeOfDay.now(),
+    //           50),
+    //       Event('Today\'s Event 2', 'Online', DateTime.now(), TimeOfDay.now(),
+    //           50),
+    //     ],
+    //   });
+
+    kEvents = LinkedHashMap<DateTime, List<Event>>(
+      equals: isSameDay,
+      hashCode: getHashCode,
+    )..addAll(_kEventSource);
+    print('kEvents: $kEvents');
+
+    if (_isFirstBuilt) {
+      _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay));
+      _isFirstBuilt = false;
+    }
     return Column(
       children: [
         TableCalendar<Event>(

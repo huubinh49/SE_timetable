@@ -270,7 +270,8 @@ class _TimetableScreenState extends State<TimetableScreen> {
                               ),
                               Expanded(
                                   child: _isMonthView
-                                      ? CalendarMonthView()
+                                      ? CalendarMonthView(
+                                          nameToID(_selectedValue))
                                       : CalendarWeekView(
                                           nameToID(_selectedValue))),
                             ],
