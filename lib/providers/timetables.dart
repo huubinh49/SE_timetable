@@ -117,7 +117,7 @@ class Timetables with ChangeNotifier {
     if (idx < 0) {
       return;
     }
-    final url = Uri.parse(_makeRef('timetables/$id'));
+    final url = Uri.parse(_makeRef('timetables/$id.json'));
     http.delete(url).then((value) {
       items.removeAt(idx);
       notifyListeners();
