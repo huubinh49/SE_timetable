@@ -8,6 +8,7 @@ import 'package:timetable/views/timetable/timetable_edit_screen.dart';
 import 'package:timetable/widgets/app_drawer.dart';
 import 'package:timetable/widgets/calendar_month_view.dart';
 import 'package:timetable/widgets/calendar_week_view.dart';
+import 'package:timetable/providers/courses.dart';
 import 'package:timetable/providers/timetables.dart';
 
 class TimetableScreen extends StatefulWidget {
@@ -36,12 +37,12 @@ class _TimetableScreenState extends State<TimetableScreen> {
     _isMonthView = false;
     _isInit = true;
     _isFirstBuilt = true;
-    _isLoading = false;
+    _isLoading = true;
     super.initState();
   }
 
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() async {
     print('Timetable::didChangeDependencies');
     super.didChangeDependencies();
 
@@ -54,9 +55,18 @@ class _TimetableScreenState extends State<TimetableScreen> {
           .fetch()
           .catchError((error) => {})
           .whenComplete(() {
-        setState(() {
-          _isLoading = false;
-        });
+        var courses = Provider.of<Courses>(context, listen: false);
+        if (courses.items == null || courses.items.isEmpty) {
+          courses.fetchAndSetDataCourses().whenComplete(() {
+            setState(() {
+              _isLoading = false;
+            });
+          });
+        } else {
+          setState(() {
+            _isLoading = false;
+          });
+        }
       });
       _isInit = false;
     }
