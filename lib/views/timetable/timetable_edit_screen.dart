@@ -94,12 +94,11 @@ class _TimeTableEditScreenState extends State<TimeTableEditScreen> {
                     children: [
                       Expanded(
                           child: CourseTile(
-                            title: 'OOP',
-                            colorItem: Colors.redAccent,
+                            name: 'OOP',
+                            color: Colors.redAccent,
                             room: 'F102',
                             date: DateTime.now(),
-                            hour: 12,
-                            minute: 30,
+                            startTime: 12,
                             id: DateTime.now().toString(),
                             duration: 120,
                           )),
@@ -123,12 +122,11 @@ class _TimeTableEditScreenState extends State<TimeTableEditScreen> {
                     children: [
                       Expanded(
                           child: CourseTile(
-                            title: 'Computer Network',
-                            colorItem: Colors.green,
+                            name: 'Computer Network',
+                            color: Colors.green,
                             room: 'F102',
                             date: DateTime.now(),
-                            hour: 10,
-                            minute: 30,
+                            startTime: 10,
                             id: DateTime.now().toString(),
                             duration: 120,
                           )),
@@ -152,12 +150,11 @@ class _TimeTableEditScreenState extends State<TimeTableEditScreen> {
                     children: [
                       Expanded(
                           child: CourseTile(
-                            title: 'Math',
-                            colorItem: Colors.deepPurple,
+                            name: 'Math',
+                            color: Colors.deepPurple,
                             room: 'F102',
                             date: DateTime.now(),
-                            hour: 10,
-                            minute: 30,
+                            startTime: 10,
                             id: DateTime.now().toString(),
                             duration: 120,
                           )),

@@ -29,6 +29,7 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
     final format = DateFormat.jm(); //"6:00 AM"
     return format.format(dt);
   }
+
   static const double inputHeight = 60;
   static const double gap = 15;
   Color colorChoose;
@@ -39,15 +40,14 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
   final _formKey = new GlobalKey<FormState>();
   String courseId;
 
-  var _createCourse = Course(
-      null,
-      '',
+  var _createCourse = Course(null, '',
       room: '',
       date: null,
       color: null,
       duration: 0,
       startTime: null,
-      lecturerName: '', taskIds: []);
+      lecturerName: '',
+      taskIds: []);
 
   var _isInit = true;
 
@@ -73,15 +73,17 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
           'duration': _createCourse.duration.toString(),
           'note': _createCourse.note,
         };
-
-      }else{
-        _createCourse.startTime = TimeOfDay.now().hour*60 +TimeOfDay.now().minute;
+      } else {
+        _createCourse.startTime =
+            TimeOfDay.now().hour * 60 + TimeOfDay.now().minute;
         _createCourse.date = DateTime.now();
         _createCourse.color = Colors.blue;
       }
       colorChoose = _createCourse.color;
       date = _createCourse.date;
-      time = TimeOfDay(hour: _createCourse.startTime ~/ 60, minute: _createCourse.startTime % 60);
+      time = TimeOfDay(
+          hour: _createCourse.startTime ~/ 60,
+          minute: _createCourse.startTime % 60);
     }
     _isInit = false;
     super.didChangeDependencies();
@@ -101,9 +103,9 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
           .updateCourse(_createCourse.id, _createCourse);
     } else {
       try {
-        await Provider.of<Courses>(context, listen: false).addCourse(_createCourse);
+        await Provider.of<Courses>(context, listen: false)
+            .addCourse(_createCourse);
       } catch (error) {
-
         await showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
@@ -114,7 +116,8 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).errorColor),
             ),
-            content: Text('Something went wrong!\nPlease try it later! ${error}'),
+            content:
+                Text('Something went wrong!\nPlease try it later! ${error}'),
             actions: [
               FlatButton(
                   onPressed: () {
@@ -140,7 +143,8 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
     return Scaffold(
       backgroundColor: Color(0xfffffcf0),
       appBar: AppBar(
-        title: courseId==null? Text("Create Course"): Text("Edit Course"), //title of appbar
+        title: courseId == null ? Text("Create Course") : Text("Edit Course"),
+        //title of appbar
         backgroundColor: mainColor,
         actions: <Widget>[
           IconButton(
@@ -173,7 +177,6 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                           padding: EdgeInsets.symmetric(vertical: 5),
                           color: Colors.white,
                           child: TextFormField(
-
                             initialValue: _initValues['name'],
                             keyboardType: TextInputType.name,
                             textInputAction: TextInputAction.next,
@@ -322,8 +325,7 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                             icon: Icon(Icons.calendar_today_outlined,
                                 color: Colors.black),
                             label: Text(
-                              DateFormat("yyyy-MM-dd")
-                                  .format(date),
+                              DateFormat("yyyy-MM-dd").format(date),
                               style: TextStyle(color: Colors.black),
                             ),
                             onPressed: () {
@@ -334,10 +336,10 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                                 lastDate: DateTime.now()
                                     .add(Duration(days: 2021 * 10)),
                                 context: context,
-                                selectedDate: date ,
+                                selectedDate: date,
                                 onChanged: (value) => setState(() {
                                   date = value;
-                                  _createCourse.date= date;
+                                  _createCourse.date = date;
                                 }),
                               );
                             },
@@ -364,10 +366,11 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                                   onPressed: () {
                                     showMaterialTimePicker(
                                       context: context,
-                                      selectedTime:time,
+                                      selectedTime: time,
                                       onChanged: (value) => setState(() {
                                         time = value;
-                                        _createCourse.startTime = value.hour * 60 + value.minute;
+                                        _createCourse.startTime =
+                                            value.hour * 60 + value.minute;
                                       }),
                                     );
                                   },
@@ -406,7 +409,7 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                                       return null;
                                     },
                                     onSaved: (value) {
-                                      _createCourse.duration =  int.parse(value);
+                                      _createCourse.duration = int.parse(value);
                                     },
                                   ),
                                 ),
@@ -416,7 +419,8 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                         ),
                         // Enter note (text form field)
                         Container(
-                          padding: EdgeInsets.only(bottom: gap, left: 16, right: 16),
+                          padding:
+                              EdgeInsets.only(bottom: gap, left: 16, right: 16),
                           // infinity
                           width: double.infinity,
                           child: TextFormField(
@@ -441,62 +445,64 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                             },
                           ),
                         ),
-                        courseId==null ? SizedBox(): FlatButton(
-                            onPressed: () async {
-                              final chooseOption = await showDialog(
-                                context: context,
-                                builder: (ctx) => AlertDialog(
-                                  title: Text('Are you sure?'),
-                                  content: Text(
-                                      "All assignments and exams of this course will be lost"),
-                                  actions: [
-                                    FlatButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop(false);
-                                      },
-                                      child: Text(
-                                        "CANCEL",
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600,
-                                            color:
-                                                Theme.of(context).primaryColor),
-                                      ),
+                        courseId == null
+                            ? SizedBox()
+                            : FlatButton(
+                                onPressed: () async {
+                                  final chooseOption = await showDialog(
+                                    context: context,
+                                    builder: (ctx) => AlertDialog(
+                                      title: Text('Are you sure?'),
+                                      content: Text(
+                                          "All assignments and exams of this course will be lost"),
+                                      actions: [
+                                        FlatButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop(false);
+                                          },
+                                          child: Text(
+                                            "CANCEL",
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w600,
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                          ),
+                                        ),
+                                        FlatButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop(true);
+                                          },
+                                          child: Text(
+                                            "OK",
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w600,
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    FlatButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop(true);
-                                      },
-                                      child: Text(
-                                        "OK",
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600,
-                                            color:
-                                                Theme.of(context).primaryColor),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                              if (chooseOption == true) {
-                                 Provider.of<Courses>(context, listen: false)
-                                    .deleteCourse(courseId);
-                                Navigator.of(context).popAndPushNamed(
-                                    CourseListScreen.routeName);
-                              } else {
-                                return;
-                              }
-                            },
-                            child: Center(
-                                child: Text(
-                              'DELETE',
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFFC20000),
-                              ),
-                            ))),
+                                  );
+                                  if (chooseOption == true) {
+                                    Provider.of<Courses>(context, listen: false)
+                                        .deleteCourse(courseId);
+                                    Navigator.of(context).popAndPushNamed(
+                                        CourseListScreen.routeName);
+                                  } else {
+                                    return;
+                                  }
+                                },
+                                child: Center(
+                                    child: Text(
+                                  'DELETE',
+                                  style: TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFFC20000),
+                                  ),
+                                ))),
                       ],
                     ),
                   ),

@@ -16,8 +16,10 @@ class Courses with ChangeNotifier {
 
 
   Future<void> fetchAndSetDataCourses() async {
+    // This tell Firebase that we want to filter by creator ID and only where it's equal to the userId
+    // => Only these entries should be return, đọc cái rule trên firebase t sửa giùm
     final url = Uri.parse(
-        'https://timetable-app-60033-default-rtdb.firebaseio.com/user/$userId/courses.json?auth=$authToken');
+        'https://timetable-app-60033-default-rtdb.firebaseio.com/user/$userId/courses.json?auth=$authToken&orderBy"creatorId"&equalTo="$userId"');
     try {
       final response = await http.get(url);
       // Convert json to flutter data by json.decode()
@@ -33,7 +35,6 @@ class Courses with ChangeNotifier {
           date: DateTime.parse(courseData['date']),
           startTime: courseData['startTime'],
           duration: courseData['duration'],
-
           lecturerName: courseData['lecturerName'],
           room: courseData['room'],
           color: Color(courseData['color']).withOpacity(1),
@@ -67,7 +68,9 @@ class Courses with ChangeNotifier {
             'lecturerName': course.lecturerName,
             'room': course.room,
             'startTime': course.startTime,
-            'taskIds': course.taskIds.join(", ")
+            // Xoa t dap cm, nay de xac dinh ID roi load len UI
+            'creatorId': userId,
+            'taskIds': course.taskIds.join(", "),
           },
         ),
       );
