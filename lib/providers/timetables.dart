@@ -90,9 +90,9 @@ class Timetables with ChangeNotifier {
     print(url);
     try {
       final response = await http.post(url, body: json.encode(t.bodyToMap()));
-      print(response.statusCode);
       final newTimetable = Timetable(json.decode(response.body)['name'], t.name,
           startDate: t.startDate, endDate: t.endDate);
+      newTimetable.courseIds = t.courseIds;
       _items.insert(0, newTimetable);
       notifyListeners();
     } catch (e) {
@@ -106,8 +106,8 @@ class Timetables with ChangeNotifier {
       return;
     }
 
-    final url = Uri.parse(_makeRef('timetables/$id.json'));
-    await http.post(url, body: json.encode(newTimetable.bodyToMap()));
+    final url = Uri.parse(_makeRef('timetables/$id/.json'));
+    await http.patch(url, body: json.encode(newTimetable.bodyToMap()));
     items[idx] = newTimetable;
     notifyListeners();
   }

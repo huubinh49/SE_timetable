@@ -195,8 +195,9 @@ class _TimetableScreenState extends State<TimetableScreen> {
                                         IconButton(
                                             onPressed: () {
                                               Navigator.of(context).pushNamed(
-                                                  TimeTableEditScreen
-                                                      .routeName);
+                                                  TimeTableEditScreen.routeName,
+                                                  arguments:
+                                                      nameToID(_selectedValue));
                                             },
                                             icon: Icon(Icons.edit)),
                                       ],
