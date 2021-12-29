@@ -1,6 +1,7 @@
 import 'package:timetable/models/timetable.dart';
 
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -46,12 +47,13 @@ class Timetables with ChangeNotifier {
   /// Check if the data has changed. If it is, download the changes, apply the
   /// changes and notify listeners.
   Future<void> fetch() async {
+    log('Timetables: Fetching timetable data...');
     if (!_okToGo()) {
       return;
     }
     final url = Uri.parse(_makeRef('timetables.json'));
 
-    print('Fetching...');
+    log('Timetables: Fetching from $url');
     try {
       var response;
       print(previousGetRequestTime);
@@ -66,7 +68,7 @@ class Timetables with ChangeNotifier {
 
       print(response.statusCode);
       if (response.statusCode == 304) {
-        print('Reach here');
+        log('Timetable: No change since $previousGetRequestTime');
         return;
       }
       final jsonData = json.decode(response.body) as Map<String, dynamic>;
@@ -106,9 +108,12 @@ class Timetables with ChangeNotifier {
       return;
     }
 
-    final url = Uri.parse(_makeRef('timetables/$id/.json'));
+    final url = Uri.parse(_makeRef('timetables/$id.json'));
     await http.patch(url, body: json.encode(newTimetable.bodyToMap()));
-    items[idx] = newTimetable;
+    items[idx].name = newTimetable.name;
+    items[idx].startDate = newTimetable.startDate;
+    items[idx].endDate = newTimetable.endDate;
+    items[idx].courseIds = newTimetable.courseIds;
     notifyListeners();
   }
 
