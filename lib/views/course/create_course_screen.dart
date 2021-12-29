@@ -5,6 +5,7 @@ import 'package:timetable/constants/colors.dart';
 import 'package:intl/intl.dart';
 import 'package:timetable/models/course.dart';
 import 'package:timetable/providers/courses.dart';
+import 'package:timetable/providers/timetables.dart';
 import 'package:timetable/views/course/course_list_screen.dart';
 
 class CreateCourseScreen extends StatefulWidget {
@@ -488,6 +489,9 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                                   if (chooseOption == true) {
                                     Provider.of<Courses>(context, listen: false)
                                         .deleteCourse(courseId);
+                                    Provider.of<Timetables>(context,
+                                            listen: false)
+                                        .updateWhenCourseDeleted(courseId);
                                     Navigator.of(context).popAndPushNamed(
                                         CourseListScreen.routeName);
                                   } else {

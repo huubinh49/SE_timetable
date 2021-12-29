@@ -132,4 +132,16 @@ class Timetables with ChangeNotifier {
   Timetable findById(String id) {
     return _items.firstWhere((element) => element.id == id);
   }
+
+  Future<void> updateWhenCourseDeleted(String courseId) async {
+    for (final item in items) {
+      int idx = item.courseIds.indexWhere((element) => element == courseId);
+      if (idx != -1) {
+        item.courseIds.removeAt(idx);
+        final url = Uri.parse(_makeRef('timetables/${item.id}.json'));
+        await http.patch(url, body: json.encode({'courseIds': item.courseIds}));
+      }
+    }
+    notifyListeners();
+  }
 }
