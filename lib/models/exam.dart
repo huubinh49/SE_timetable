@@ -9,19 +9,38 @@ class Exam extends Task {
       int importantLevel,
       bool state,
       String note,
+      String parentId,
       this.room})
       : super(id, name, startDate, endDate,
             notificationTime: notificationTime,
             topic: topic,
             importantLevel: importantLevel,
             state: state,
-            note: note);
+            note: note,
+            parentId: parentId);
+
+  Exam.fromMap(Map<String, dynamic> map)
+      : assert(map['type'] == 'exam'),
+        super(
+          map['id'],
+          map['name'],
+          DateTime.parse(map['startDate']),
+          DateTime.parse(map['endDate']),
+          notificationTime: map['notificationTime'],
+          importantLevel: map['importantLevel'],
+          state: map['state'],
+          note: map['note'],
+          parentId: map['parentId']
+      ) {
+    room = map['room'];
+  }
 
   @override
   String get type => 'exam';
 
   @override
-  String toString() => 'Exam(id: $id, name: $name)';
+  String toString() =>
+      'Exam(id: $id, name: $name, range: ${formatDate(startDate)} - ${formatDate(endDate)}, room: $room)';
 
   @override
   Map<String, dynamic> toMap() {
