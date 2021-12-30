@@ -10,6 +10,7 @@ class Assignment extends Task {
       int importantLevel = 1,
       bool state = false,
       String note,
+      String parentId,
       this.progress = 0,
       this.isGroupProject = false})
       : assert(progress >= 0 && progress <= 100),
@@ -18,7 +19,8 @@ class Assignment extends Task {
             topic: topic,
             note: note,
             importantLevel: importantLevel,
-            state: state);
+            state: state,
+            parentId: parentId);
 
   Assignment.fromMap(Map<String, dynamic> map)
       : assert(map['type'] == 'assignment'),
@@ -31,8 +33,10 @@ class Assignment extends Task {
           importantLevel: map['importantLevel'],
           state: map['state'],
           note: map['note'],
+          parentId: map['parentId']
         ) {
     progress = map['progress'];
+    isGroupProject = map['isGroupProject'];
   }
 
   @override

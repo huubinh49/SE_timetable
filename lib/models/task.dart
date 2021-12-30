@@ -23,14 +23,15 @@ abstract class Task extends AbstractThing {
   String note;
 
   /// ID of the parent course.
-  int parentId;
+  String parentId;
 
   Task(String id, String name, DateTime startDate, DateTime endDate,
       {this.notificationTime,
       this.topic,
       this.importantLevel = 1,
       this.state = false,
-      this.note})
+      this.note,
+      this.parentId})
       : assert(startDate.compareTo(endDate) <= 0),
         super(id, name) {
     if (startDate != null) {
@@ -52,6 +53,7 @@ abstract class Task extends AbstractThing {
         'note': note,
         'importantLevel': importantLevel,
         'state': state,
+        'parentId': parentId
       };
 
   String get type;
