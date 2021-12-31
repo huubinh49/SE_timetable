@@ -120,7 +120,7 @@ class _TimeTableEditScreenState extends State<TimeTableEditScreen> {
                       onSaved: (value) {
                         // Save the value when user type
                         setState(() {
-                          _currentName == value;
+                          _currentName = value;
                         });
                       },
                     ),
