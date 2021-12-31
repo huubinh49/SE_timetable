@@ -42,7 +42,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
   }
 
   @override
-  void didChangeDependencies() async {
+  void didChangeDependencies() {
     print('Timetable::didChangeDependencies');
     super.didChangeDependencies();
 
@@ -51,22 +51,12 @@ class _TimetableScreenState extends State<TimetableScreen> {
         _isLoading = true;
       });
 
-      Provider.of<Timetables>(context, listen: false)
-          .fetch()
-          .catchError((error) => {})
-          .whenComplete(() {
-        var courses = Provider.of<Courses>(context, listen: false);
-        if (courses.items == null || courses.items.isEmpty) {
-          courses.fetchAndSetDataCourses().whenComplete(() {
-            setState(() {
-              _isLoading = false;
-            });
-          });
-        } else {
+      Provider.of<Courses>(context).fetchAndSetDataCourses().then((value) {
+        Provider.of<Timetables>(context, listen: false).fetch().then((value) {
           setState(() {
             _isLoading = false;
           });
-        }
+        });
       });
       _isInit = false;
     }
@@ -108,7 +98,6 @@ class _TimetableScreenState extends State<TimetableScreen> {
       _selectedValue = _items.first;
     }
     // Otherwise, leave _selectedValue untouched.
-
     return Scaffold(
       drawer: AppDrawer(),
       appBar: AppBar(
