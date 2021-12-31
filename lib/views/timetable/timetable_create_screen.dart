@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:developer';
+
 import 'package:timetable/widgets/course_tile.dart';
 import 'package:timetable/models/timetable.dart';
 import 'package:timetable/providers/timetables.dart';
@@ -15,24 +17,19 @@ class TimeTableCreateScreen extends StatefulWidget {
 class _TimeTableCreateScreenState extends State<TimeTableCreateScreen> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
-  bool valueCheckBox1 = false;
-  bool valueCheckBox2 = false;
-  bool valueCheckBox3 = false;
-
-  String name;
-  List<String> selectedCourses = [];
+  String _name;
+  List<String> _selectedCourses = [];
 
   void _createTimeTable() {
-    print('TimetableCreateScreen::_createTimeTable');
+    log('TimetableCreateScreen: _createTimeTable');
     final isValid = _formKey.currentState.validate();
     if (!isValid) {
       return;
     }
     _formKey.currentState.save();
 
-    print('Creating timetable $name...');
-    Timetable t = Timetable("", name);
-    t.courseIds = selectedCourses;
+    Timetable t = Timetable('', _name);
+    t.courseIds = _selectedCourses;
     Provider.of<Timetables>(context, listen: false).addTimetable(t);
     Navigator.of(context).pop();
   }
@@ -97,7 +94,7 @@ class _TimeTableCreateScreenState extends State<TimeTableCreateScreen> {
                       onSaved: (value) {
                         // Save the value when user type
                         print('TextFormField onSaved');
-                        name = value;
+                        _name = value;
                       },
                     ),
                   ),
@@ -111,89 +108,6 @@ class _TimeTableCreateScreenState extends State<TimeTableCreateScreen> {
                   SizedBox(
                     height: 10,
                   ),
-                  // Row(
-                  //   children: [
-                  //     Expanded(
-                  //         child: CourseTile(
-                  //       name: 'OOP',
-                  //       color: Colors.redAccent,
-                  //       room: 'F102',
-                  //       date: DateTime.now(),
-                  //       startTime: 7 * 60 + 30,
-                  //       id: DateTime.now().toString(),
-                  //       duration: 120,
-                  //     )),
-                  //     SizedBox(width: 10), //SizedBox
-                  //     Transform.scale(
-                  //       scale: 1.5,
-                  //       child: Checkbox(
-                  //         value: valueCheckBox1,
-                  //         side: BorderSide(color: Colors.blue),
-                  //         onChanged: (bool value) {
-                  //           setState(() {
-                  //             valueCheckBox1 = value;
-                  //           });
-                  //         },
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                  // Divider(),
-                  // Row(
-                  //   children: [
-                  //     Expanded(
-                  //         child: CourseTile(
-                  //       name: 'Computer Network',
-                  //       color: Colors.green,
-                  //       room: 'F102',
-                  //       date: DateTime.now(),
-                  //       startTime: 10 * 60 + 30,
-                  //       id: DateTime.now().toString(),
-                  //       duration: 120,
-                  //     )),
-                  //     SizedBox(width: 10), //SizedBox
-                  //     Transform.scale(
-                  //       scale: 1.5,
-                  //       child: Checkbox(
-                  //         value: valueCheckBox2,
-                  //         side: BorderSide(color: Colors.blue),
-                  //         onChanged: (bool value) {
-                  //           setState(() {
-                  //             valueCheckBox2 = value;
-                  //           });
-                  //         },
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                  // Divider(),
-                  // Row(
-                  //   children: [
-                  //     Expanded(
-                  //         child: CourseTile(
-                  //       name: 'Math',
-                  //       color: Colors.deepPurple,
-                  //       room: 'F102',
-                  //       date: DateTime.now(),
-                  //       startTime: 10 * 30,
-                  //       id: DateTime.now().toString(),
-                  //       duration: 120,
-                  //     )),
-                  //     SizedBox(width: 10), //SizedBox
-                  //     Transform.scale(
-                  //       scale: 1.5,
-                  //       child: Checkbox(
-                  //         value: valueCheckBox3,
-                  //         side: BorderSide(color: Colors.blue),
-                  //         onChanged: (bool value) {
-                  //           setState(() {
-                  //             valueCheckBox3 = value;
-                  //           });
-                  //         },
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
                   Divider(),
                   ...Provider.of<Courses>(context).items.map((elem) {
                     return Row(
@@ -214,13 +128,13 @@ class _TimeTableCreateScreenState extends State<TimeTableCreateScreen> {
                           scale: 1.5,
                           child: Checkbox(
                             side: BorderSide(color: Colors.blue),
-                            value: selectedCourses.contains(elem.id),
+                            value: _selectedCourses.contains(elem.id),
                             onChanged: (value) {
                               setState(() {
                                 if (value == true) {
-                                  selectedCourses.add(elem.id);
+                                  _selectedCourses.add(elem.id);
                                 } else {
-                                  selectedCourses.removeWhere(
+                                  _selectedCourses.removeWhere(
                                       (element) => element == elem.id);
                                 }
                               });
@@ -230,22 +144,6 @@ class _TimeTableCreateScreenState extends State<TimeTableCreateScreen> {
                       ],
                     );
                   }).toList(),
-                  // SizedBox(
-                  //   height: 40,
-                  // ),
-                  // Center(
-                  //   child: FlatButton(
-                  //     onPressed: () {},
-                  //     child: Text(
-                  //       "DELETE",
-                  //       style: TextStyle(
-                  //         fontSize: 25,
-                  //         fontWeight: FontWeight.bold,
-                  //         color: Color(0xFFC20000),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ),

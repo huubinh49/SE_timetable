@@ -14,17 +14,18 @@ class Timetables with ChangeNotifier {
   DateTime previousGetRequestTime;
 
   Timetables(this.authToken, this.userId, this._items) {
-    print('Timetables constructor with auth token $authToken, user id $userId');
+    log('Timetables: Constructor with auth token $authToken, user id $userId');
   }
 
   List<Timetable> get items => _items;
 
   /// Return a URL that references this path. This method assumes that you are in
-  /// /users/$userId
+  /// /user/$userId
   String _makeRef(String path) {
     return '$projectUrl/user/$userId/$path?auth=$authToken';
   }
 
+  /// Return true if authToken and userId is not empty.
   bool _okToGo() {
     return authToken != null &&
         authToken != '' &&
@@ -32,9 +33,11 @@ class Timetables with ChangeNotifier {
         userId != '';
   }
 
+  /// Update user authentication. If [newAuthToken] and [newUserId] are not
+  /// changed, then do nothing. Otherwise, the previously-fetched timetable data
+  /// will be removed to prepare for new user.
   void updateAuth(String newAuthToken, String newUserId) {
-    print(
-        'Timetables: Updating new authentication ($newAuthToken, $newUserId)');
+    log('Timetables: Updating new authentication ($newAuthToken, $newUserId)');
     if (newAuthToken == authToken && newUserId == userId) {
       return;
     }
@@ -53,10 +56,8 @@ class Timetables with ChangeNotifier {
     }
     final url = Uri.parse(_makeRef('timetables.json'));
 
-    log('Timetables: Fetching from $url');
     try {
       var response;
-      print(previousGetRequestTime);
       if (previousGetRequestTime == null) {
         response = await http.get(url);
       } else {
@@ -66,9 +67,8 @@ class Timetables with ChangeNotifier {
       }
       previousGetRequestTime = DateTime.now();
 
-      print(response.statusCode);
       if (response.statusCode == 304) {
-        log('Timetable: No change since $previousGetRequestTime');
+        log('Timetables: No change since $previousGetRequestTime');
         return;
       }
       final jsonData = json.decode(response.body) as Map<String, dynamic>;
@@ -77,17 +77,22 @@ class Timetables with ChangeNotifier {
       }
       final List<Timetable> loadedTimetables = [];
       jsonData.forEach((id, body) {
-        print('$id, $body');
         loadedTimetables.add(Timetable.fromMap(id, body));
       });
       _items = loadedTimetables;
+      log('Timetables: Fetched successfully.');
       notifyListeners();
     } catch (e) {
       throw e;
     }
   }
 
+  /// Add a new timetable.
+  ///
+  /// This method posts a timetable with info stored in [t] to the database,
+  /// update [t] with the ID returned by the database, and then add [t] to items.
   Future<void> addTimetable(Timetable t) async {
+    log('Timetables: Adding new timetable...');
     final url = Uri.parse(_makeRef('timetables.json'));
     print(url);
     try {
@@ -96,13 +101,16 @@ class Timetables with ChangeNotifier {
           startDate: t.startDate, endDate: t.endDate);
       newTimetable.courseIds = t.courseIds;
       _items.insert(0, newTimetable);
+      log('Timetables: Added successfully. New ID: ${newTimetable.id}');
       notifyListeners();
     } catch (e) {
       throw e;
     }
   }
 
+  /// Overwrite the info of the timetable with ID [id] by [newTimetable].
   Future<void> updateTimetable(String id, Timetable newTimetable) async {
+    log('Timetables: Updating timetable $id...');
     var idx = items.indexWhere((element) => element.id == id);
     if (idx < 0) {
       return;
@@ -114,10 +122,13 @@ class Timetables with ChangeNotifier {
     items[idx].startDate = newTimetable.startDate;
     items[idx].endDate = newTimetable.endDate;
     items[idx].courseIds = newTimetable.courseIds;
+    log('Timetables: Updated successfully.');
     notifyListeners();
   }
 
+  /// Remove a timetable.
   void deleteTimetable(String id) {
+    log('Timetables: Deleting timetable $id...');
     var idx = items.indexWhere((element) => element.id == id);
     if (idx < 0) {
       return;
@@ -125,6 +136,7 @@ class Timetables with ChangeNotifier {
     final url = Uri.parse(_makeRef('timetables/$id.json'));
     http.delete(url).then((value) {
       items.removeAt(idx);
+      log('Timetables: Deleted successfully.');
       notifyListeners();
     });
   }
@@ -133,13 +145,16 @@ class Timetables with ChangeNotifier {
     return _items.firstWhere((element) => element.id == id);
   }
 
+  /// Remove traces of [courseId] from whatever timetable containing it.
   Future<void> updateWhenCourseDeleted(String courseId) async {
+    log('Timetables: Removing course $courseId from timetables...');
     for (final item in items) {
       int idx = item.courseIds.indexWhere((element) => element == courseId);
       if (idx != -1) {
         item.courseIds.removeAt(idx);
         final url = Uri.parse(_makeRef('timetables/${item.id}.json'));
         await http.patch(url, body: json.encode({'courseIds': item.courseIds}));
+        log('Timetables: Done removing for timetable ${item.name}.');
       }
     }
     notifyListeners();

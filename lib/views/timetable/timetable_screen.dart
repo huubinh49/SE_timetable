@@ -1,6 +1,7 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:developer';
 
 import 'package:timetable/constants/colors.dart';
 import 'package:timetable/views/timetable/timetable_create_screen.dart';
@@ -31,7 +32,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   @override
   void initState() {
-    print('TimetableScreen::initState');
+    log('TimetableScreen: initState');
     _selectedValue = '';
     _items = [];
     _isMonthView = false;
@@ -43,7 +44,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   @override
   void didChangeDependencies() {
-    print('Timetable::didChangeDependencies');
+    log('TimetableScreen: didChangeDependencies');
     super.didChangeDependencies();
 
     if (_isInit) {
@@ -64,13 +65,13 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   @override
   void deactivate() {
-    print('TimetableScreen::deactivate');
+    log('TimetableScreen: deactivate');
     super.deactivate();
   }
 
   @override
   void dispose() {
-    print('TimetableScreen::dispose');
+    log('TimetableScreen: dispose');
     super.dispose();
   }
 

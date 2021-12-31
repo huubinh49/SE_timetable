@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:developer';
+
 import 'package:timetable/models/timetable.dart';
 import 'package:timetable/widgets/course_tile.dart';
 import 'package:timetable/providers/courses.dart';
@@ -15,21 +17,16 @@ class TimeTableEditScreen extends StatefulWidget {
 class _TimeTableEditScreenState extends State<TimeTableEditScreen> {
   final _formKey = new GlobalKey<FormState>();
 
-  bool valueCheckBox1 = false;
-  bool valueCheckBox2 = false;
-  bool valueCheckBox3 = false;
-
   bool _isInit;
-  String _timetableId;
   Timetable _currentTimetable;
   String _currentName;
   List<String> _selectedCourses;
 
   @override
   void initState() {
+    log('TimeTableEditScreen: initState');
     super.initState();
     _isInit = true;
-    _timetableId = null;
     _currentTimetable = null;
     _currentName = '';
     _selectedCourses = [];
@@ -37,8 +34,8 @@ class _TimeTableEditScreenState extends State<TimeTableEditScreen> {
 
   @override
   void didChangeDependencies() {
+    log('TimeTableEditScreen: didChangeDependencies');
     if (_isInit) {
-      // _timetableId = ModalRoute.of(context).settings.arguments as String;
       _currentTimetable = Provider.of<Timetables>(context)
           .findById(ModalRoute.of(context).settings.arguments as String);
       _currentName = _currentTimetable.name;
@@ -49,6 +46,7 @@ class _TimeTableEditScreenState extends State<TimeTableEditScreen> {
   }
 
   void _editTimeTable() {
+    log('TimeTableEditScreen: _editTimeTable');
     final isValid = _formKey.currentState.validate();
     if (!isValid) {
       return;
@@ -62,6 +60,7 @@ class _TimeTableEditScreenState extends State<TimeTableEditScreen> {
   }
 
   void _deleteTimetable() {
+    log('TimeTableEditScreen: _deleteTimetable');
     Provider.of<Timetables>(context, listen: false)
         .deleteTimetable(_currentTimetable.id);
   }
@@ -135,89 +134,6 @@ class _TimeTableEditScreenState extends State<TimeTableEditScreen> {
                   SizedBox(
                     height: 10,
                   ),
-                  // Row(
-                  //   children: [
-                  //     Expanded(
-                  //         child: CourseTile(
-                  //       name: 'OOP',
-                  //       color: Colors.redAccent,
-                  //       room: 'F102',
-                  //       date: DateTime.now(),
-                  //       startTime: 12 * 60 + 30,
-                  //       id: DateTime.now().toString(),
-                  //       duration: 120,
-                  //     )),
-                  //     SizedBox(width: 10), //SizedBox
-                  //     Transform.scale(
-                  //       scale: 1.5,
-                  //       child: Checkbox(
-                  //         value: valueCheckBox1,
-                  //         side: BorderSide(color: Colors.blue),
-                  //         onChanged: (bool value) {
-                  //           setState(() {
-                  //             valueCheckBox1 = value;
-                  //           });
-                  //         },
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                  // Divider(),
-                  // Row(
-                  //   children: [
-                  //     Expanded(
-                  //         child: CourseTile(
-                  //       name: 'Computer Network',
-                  //       color: Colors.green,
-                  //       room: 'F102',
-                  //       date: DateTime.now(),
-                  //       startTime: 10 * 60 + 30,
-                  //       id: DateTime.now().toString(),
-                  //       duration: 120,
-                  //     )),
-                  //     SizedBox(width: 10), //SizedBox
-                  //     Transform.scale(
-                  //       scale: 1.5,
-                  //       child: Checkbox(
-                  //         value: valueCheckBox2,
-                  //         side: BorderSide(color: Colors.blue),
-                  //         onChanged: (bool value) {
-                  //           setState(() {
-                  //             valueCheckBox2 = value;
-                  //           });
-                  //         },
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                  // Divider(),
-                  // Row(
-                  //   children: [
-                  //     Expanded(
-                  //         child: CourseTile(
-                  //       name: 'Math',
-                  //       color: Colors.deepPurple,
-                  //       room: 'F102',
-                  //       date: DateTime.now(),
-                  //       startTime: 10 * 60 + 30,
-                  //       id: DateTime.now().toString(),
-                  //       duration: 120,
-                  //     )),
-                  //     SizedBox(width: 10), //SizedBox
-                  //     Transform.scale(
-                  //       scale: 1.5,
-                  //       child: Checkbox(
-                  //         value: valueCheckBox3,
-                  //         side: BorderSide(color: Colors.blue),
-                  //         onChanged: (bool value) {
-                  //           setState(() {
-                  //             valueCheckBox3 = value;
-                  //           });
-                  //         },
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
                   Divider(),
                   ...Provider.of<Courses>(context).items.map((elem) {
                     return Row(
