@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:timetable/models/abstract_thing.dart';
 
 abstract class Task extends AbstractThing {
@@ -23,14 +25,19 @@ abstract class Task extends AbstractThing {
   String note;
 
   /// ID of the parent course.
-  int parentId;
+  String parentId;
+
+  /// HTML color code. Example: `#FF0000`.
+  Color color;
 
   Task(String id, String name, DateTime startDate, DateTime endDate,
       {this.notificationTime,
       this.topic,
       this.importantLevel = 1,
       this.state = false,
-      this.note})
+      this.note,
+      this.parentId,
+      this.color})
       : assert(startDate.compareTo(endDate) <= 0),
         super(id, name) {
     if (startDate != null) {
@@ -52,6 +59,8 @@ abstract class Task extends AbstractThing {
         'note': note,
         'importantLevel': importantLevel,
         'state': state,
+        'parentId': parentId,
+        'color': color
       };
 
   String get type;
