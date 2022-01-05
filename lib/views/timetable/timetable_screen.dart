@@ -11,6 +11,7 @@ import 'package:timetable/widgets/calendar_month_view.dart';
 import 'package:timetable/widgets/calendar_week_view.dart';
 import 'package:timetable/providers/courses.dart';
 import 'package:timetable/providers/timetables.dart';
+import 'package:timetable/views/timetable/util.dart';
 
 class TimetableScreen extends StatefulWidget {
   static String routeName = "timetable_screen";
@@ -57,8 +58,10 @@ class _TimetableScreenState extends State<TimetableScreen> {
           setState(() {
             _isLoading = false;
           });
-        });
-      });
+        }).catchError((e) => Util.getInstance()
+            .showAlertDialogOk(context, 'Error', 'An error occured'));
+      }).catchError((e) => Util.getInstance()
+          .showAlertDialogOk(context, 'Error', 'An error occured'));
       _isInit = false;
     }
   }

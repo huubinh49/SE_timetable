@@ -94,7 +94,7 @@ class Timetables with ChangeNotifier {
   Future<void> addTimetable(Timetable t) async {
     log('Timetables: Adding new timetable...');
     final url = Uri.parse(_makeRef('timetables.json'));
-    print(url);
+
     try {
       final response = await http.post(url, body: json.encode(t.bodyToMap()));
       final newTimetable = Timetable(json.decode(response.body)['name'], t.name,
@@ -117,28 +117,36 @@ class Timetables with ChangeNotifier {
     }
 
     final url = Uri.parse(_makeRef('timetables/$id.json'));
-    await http.patch(url, body: json.encode(newTimetable.bodyToMap()));
-    items[idx].name = newTimetable.name;
-    items[idx].startDate = newTimetable.startDate;
-    items[idx].endDate = newTimetable.endDate;
-    items[idx].courseIds = newTimetable.courseIds;
-    log('Timetables: Updated successfully.');
-    notifyListeners();
+    try {
+      await http.patch(url, body: json.encode(newTimetable.bodyToMap()));
+      items[idx].name = newTimetable.name;
+      items[idx].startDate = newTimetable.startDate;
+      items[idx].endDate = newTimetable.endDate;
+      items[idx].courseIds = newTimetable.courseIds;
+      log('Timetables: Updated successfully.');
+      notifyListeners();
+    } catch (e) {
+      throw e;
+    }
   }
 
   /// Remove a timetable.
-  void deleteTimetable(String id) {
+  Future<void> deleteTimetable(String id) async {
     log('Timetables: Deleting timetable $id...');
     var idx = items.indexWhere((element) => element.id == id);
     if (idx < 0) {
       return;
     }
-    final url = Uri.parse(_makeRef('timetables/$id.json'));
-    http.delete(url).then((value) {
+
+    try {
+      final url = Uri.parse(_makeRef('timetables/$id.json'));
+      await http.delete(url);
       items.removeAt(idx);
       log('Timetables: Deleted successfully.');
       notifyListeners();
-    });
+    } catch (e) {
+      throw e;
+    }
   }
 
   Timetable findById(String id) {
@@ -153,8 +161,13 @@ class Timetables with ChangeNotifier {
       if (idx != -1) {
         item.courseIds.removeAt(idx);
         final url = Uri.parse(_makeRef('timetables/${item.id}.json'));
-        await http.patch(url, body: json.encode({'courseIds': item.courseIds}));
-        log('Timetables: Done removing for timetable ${item.name}.');
+        try {
+          await http.patch(url,
+              body: json.encode({'courseIds': item.courseIds}));
+          log('Timetables: Done removing for timetable ${item.name}.');
+        } catch (e) {
+          throw e;
+        }
       }
     }
     notifyListeners();

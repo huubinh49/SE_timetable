@@ -6,6 +6,7 @@ import 'package:timetable/models/timetable.dart';
 import 'package:timetable/widgets/course_tile.dart';
 import 'package:timetable/providers/courses.dart';
 import 'package:timetable/providers/timetables.dart';
+import 'package:timetable/views/timetable/util.dart';
 
 class TimeTableEditScreen extends StatefulWidget {
   static const routeName = 'timetable-edit-screen';
@@ -55,14 +56,21 @@ class _TimeTableEditScreenState extends State<TimeTableEditScreen> {
     Timetable newTimetable = Timetable('', _currentName);
     newTimetable.courseIds = _selectedCourses;
     Provider.of<Timetables>(context, listen: false)
-        .updateTimetable(_currentTimetable.id, newTimetable);
-    Navigator.of(context).pop();
+        .updateTimetable(_currentTimetable.id, newTimetable)
+        .then((_) {
+      Navigator.of(context).pop();
+    }).catchError((e) => Util.getInstance()
+            .showAlertDialogOk(context, 'Error', 'An error occured'));
   }
 
   void _deleteTimetable() {
     log('TimeTableEditScreen: _deleteTimetable');
     Provider.of<Timetables>(context, listen: false)
-        .deleteTimetable(_currentTimetable.id);
+        .deleteTimetable(_currentTimetable.id)
+        .then((_) {
+      Navigator.of(context).pop();
+    }).catchError((e) => Util.getInstance()
+            .showAlertDialogOk(context, 'Error', 'An error occured'));
   }
 
   @override
@@ -178,7 +186,6 @@ class _TimeTableEditScreenState extends State<TimeTableEditScreen> {
                     child: FlatButton(
                       onPressed: () {
                         _deleteTimetable();
-                        Navigator.of(context).pop();
                       },
                       child: Text(
                         "DELETE",

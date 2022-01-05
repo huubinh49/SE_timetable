@@ -6,6 +6,7 @@ import 'package:timetable/widgets/course_tile.dart';
 import 'package:timetable/models/timetable.dart';
 import 'package:timetable/providers/timetables.dart';
 import 'package:timetable/providers/courses.dart';
+import 'package:timetable/views/timetable/util.dart';
 
 class TimeTableCreateScreen extends StatefulWidget {
   static const routeName = 'timetable-create-screen';
@@ -30,8 +31,12 @@ class _TimeTableCreateScreenState extends State<TimeTableCreateScreen> {
 
     Timetable t = Timetable('', _name);
     t.courseIds = _selectedCourses;
-    Provider.of<Timetables>(context, listen: false).addTimetable(t);
-    Navigator.of(context).pop();
+    Provider.of<Timetables>(context, listen: false)
+        .addTimetable(t)
+        .then((value) {
+      Navigator.of(context).pop();
+    }).catchError((e) => Util.getInstance()
+            .showAlertDialogOk(context, 'Error', 'An error occured'));
   }
 
   @override
