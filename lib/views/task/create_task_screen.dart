@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_material_pickers/helpers/show_date_picker.dart';
+import 'package:flutter_material_pickers/helpers/show_time_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:timetable/constants/colors.dart';
 import 'package:intl/intl.dart';
@@ -6,7 +8,6 @@ import 'package:timetable/models/assignment.dart';
 import 'package:timetable/models/exam.dart';
 import 'package:timetable/providers/assignments.dart';
 import 'package:timetable/providers/exams.dart';
-import 'package:timetable/views/task/task_list_screen.dart';
 
 class CreateTaskScreen extends StatefulWidget {
   static String routeName = "create_task_screen";
@@ -16,14 +17,14 @@ class CreateTaskScreen extends StatefulWidget {
 }
 
 class _CreateTaskScreenState extends State<CreateTaskScreen> {
-  static const double inputHeight = 60;
-  static const double gap = 15;
   var _isInit = true;
   var _isLoading = false;
   final _formKey = new GlobalKey<FormState>();
   String taskId;
   DateTime _startDate;
   DateTime _endDate;
+  TimeOfDay _startTime;
+  TimeOfDay _endTime;
   var _attributes = {
     'id': '',
     'name': '',
@@ -42,6 +43,20 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
   };
 
   void updateDateAttributes() {
+    _startDate = DateTime(
+      _startDate.year,
+      _startDate.month,
+      _startDate.day,
+      _startTime.hour,
+      _startTime.minute,
+    );
+    _endDate = DateTime(
+      _endDate.year,
+      _endDate.month,
+      _endDate.day,
+      _endTime.hour,
+      _endTime.minute,
+    );
     _attributes['startDate'] = DateFormat('yyyy-MM-dd HH:mm').format(_startDate);
     _attributes['endDate'] = DateFormat('yyyy-MM-dd HH:mm').format(_endDate);
     _attributes['notificationTime'] = DateFormat('yyyy-MM-dd HH:mm').format(_endDate);
@@ -69,8 +84,10 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
       else {
         _startDate = DateTime.now();
         _endDate = DateTime.now();
-        updateDateAttributes();
       }
+      _startTime = TimeOfDay(hour: _startDate.hour, minute: _startDate.minute);
+      _endTime = TimeOfDay(hour: _endDate.hour, minute: _endDate.minute);
+      if (taskId == null) updateDateAttributes();
     }
     _isInit = false;
     super.didChangeDependencies();
@@ -199,6 +216,137 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                         ),
                       ),
 
+                      // Pick start date
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                "Start date",
+                                style: TextStyle(fontSize: 18, color: Colors.black),
+                              ),
+                              flex: 8,
+                            ),
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                  MaterialStateProperty.all(Colors.white)),
+                                icon: Icon(Icons.calendar_today_outlined,
+                                  color: Colors.black),
+                                label: Text(
+                                  DateFormat("yyyy-MM-dd").format(_startDate),
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                onPressed: () {
+                                  showMaterialDatePicker(
+                                    title: "Calendar",
+                                    firstDate: DateTime.now()
+                                        .subtract(Duration(days: 2021 * 10)),
+                                    lastDate: DateTime.now()
+                                        .add(Duration(days: 2021 * 10)),
+                                    context: context,
+                                    selectedDate: _startDate,
+                                    onChanged: (value) => setState(() {
+                                      _startDate = value;
+                                      updateDateAttributes();
+                                    }),
+                                  );
+                                },
+                              ),
+                              flex: 12,
+                            ),
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                    MaterialStateProperty.all(
+                                        Colors.redAccent)),
+                                icon: Icon(Icons.access_time),
+                                label: Text(_startTime.format(context)),
+                                onPressed: () {
+                                  showMaterialTimePicker(
+                                    context: context,
+                                    selectedTime: _startTime,
+                                    onChanged: (value) => setState(() {
+                                      _startTime = value;
+                                      updateDateAttributes();
+                                    }),
+                                  );
+                                },
+                              ),
+                              flex: 8,
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Pick end date
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                "End date",
+                                style: TextStyle(fontSize: 18, color: Colors.black),
+                              ),
+                              flex: 8,
+                            ),
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                style: ButtonStyle(
+                                    backgroundColor:
+                                    MaterialStateProperty.all(Colors.white)),
+                                icon: Icon(Icons.calendar_today_outlined,
+                                    color: Colors.black),
+                                label: Text(
+                                  DateFormat("yyyy-MM-dd").format(_endDate),
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                onPressed: () {
+                                  showMaterialDatePicker(
+                                    title: "Calendar",
+                                    firstDate: DateTime.now()
+                                        .subtract(Duration(days: 2021 * 10)),
+                                    lastDate: DateTime.now()
+                                        .add(Duration(days: 2021 * 10)),
+                                    context: context,
+                                    selectedDate: _endDate,
+                                    onChanged: (value) => setState(() {
+                                      _endDate = value;
+                                      updateDateAttributes();
+                                    }),
+                                  );
+                                },
+                              ),
+                              flex: 12,
+                            ),
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                style: ButtonStyle(
+                                    backgroundColor:
+                                    MaterialStateProperty.all(
+                                        Colors.redAccent)),
+                                icon: Icon(Icons.access_time),
+                                label: Text(_endTime.format(context)),
+                                onPressed: () {
+                                  showMaterialTimePicker(
+                                    context: context,
+                                    selectedTime: _endTime,
+                                    onChanged: (value) => setState(() {
+                                      _endTime = value;
+                                      updateDateAttributes();
+                                    }),
+                                  );
+                                },
+                              ),
+                              flex: 8,
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   )
                 ),
