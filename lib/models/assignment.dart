@@ -29,7 +29,7 @@ class Assignment extends Task {
           map['name'],
           DateTime.parse(map['startDate']),
           DateTime.parse(map['endDate']),
-          notificationTime: map['notificationTime'],
+          notificationTime: DateTime.parse(map['notificationTime']),
           importantLevel: map['importantLevel'],
           state: map['state'],
           note: map['note'],
