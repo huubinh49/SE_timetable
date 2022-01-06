@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/helpers/show_date_picker.dart';
 import 'package:flutter_material_pickers/helpers/show_time_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:timetable/constants/colors.dart';
 import 'package:intl/intl.dart';
+import 'package:timetable/constants/colors.dart';
 import 'package:timetable/models/assignment.dart';
 import 'package:timetable/models/exam.dart';
+import 'package:timetable/models/course.dart';
 import 'package:timetable/providers/assignments.dart';
+import 'package:timetable/providers/courses.dart';
 import 'package:timetable/providers/exams.dart';
+import 'package:timetable/views/task/task_list_screen.dart';
 
 class CreateTaskScreen extends StatefulWidget {
   static String routeName = "create_task_screen";
@@ -17,6 +20,9 @@ class CreateTaskScreen extends StatefulWidget {
 }
 
 class _CreateTaskScreenState extends State<CreateTaskScreen> {
+  double marginH = 15;
+  double marginV = 8;
+
   var _isInit = true;
   var _isLoading = false;
   final _formKey = new GlobalKey<FormState>();
@@ -25,6 +31,8 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
   DateTime _endDate;
   TimeOfDay _startTime;
   TimeOfDay _endTime;
+  List<Course> _allCourses;
+  Course currentCourse;
   var _attributes = {
     'id': '',
     'name': '',
@@ -69,6 +77,9 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
       taskId = args['taskId'];
       assert (args['type'] == 'assignment' || args['type'] == 'exam');
       _attributes['type'] = args['type'];
+      _allCourses = Provider.of<Courses>(context, listen: false).items;
+      _allCourses.insert(0, Course('', 'No course selected'));
+
       if (taskId != null) {
         if (_attributes['type'] == 'assignment') {
           var assignment = Provider.of<Assignments>(context, listen: false).findById(taskId);
@@ -78,13 +89,16 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
           var exam = Provider.of<Exams>(context, listen: false).findById(taskId);
           _attributes.addAll(exam.toMap());
         }
+        currentCourse = _allCourses.firstWhere((item) => item.id == taskId);
         _startDate = DateTime.parse(_attributes['startDate']);
         _endDate = DateTime.parse(_attributes['endDate']);
       }
       else {
+        currentCourse = _allCourses[0];
         _startDate = DateTime.now();
         _endDate = DateTime.now();
       }
+
       _startTime = TimeOfDay(hour: _startDate.hour, minute: _startDate.minute);
       _endTime = TimeOfDay(hour: _endDate.hour, minute: _endDate.minute);
       if (taskId == null) updateDateAttributes();
@@ -99,6 +113,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     _formKey.currentState.save();
     setState(() { _isLoading = true; });
 
+    _attributes['parentId'] = currentCourse.id;
     updateDateAttributes();
     var task = _attributes['type'] == 'assignment' ?
       Assignment.fromMap(_attributes) : Exam.fromMap(_attributes);
@@ -153,7 +168,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     setState(() {
       _isLoading = false;
     });
-    // Navigator.of(context).popAndPushNamed(TaskListScreen.routeName);
+    Navigator.of(context).popAndPushNamed(TaskListScreen.routeName);
   }
 
   @override
@@ -182,8 +197,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                     children: [
                       // Enter name
                       Container(
-                        margin: EdgeInsets.symmetric(horizontal: 15),
-                        padding: EdgeInsets.symmetric(vertical: 5),
+                        margin: EdgeInsets.symmetric(horizontal: marginH, vertical: marginV),
                         color: Colors.white,
                         child: TextFormField(
                           initialValue: _attributes['name'],
@@ -216,9 +230,134 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                         ),
                       ),
 
+                      // Select course
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: marginH, vertical: marginV),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                "Course",
+                                style: TextStyle(fontSize: 18, color: Colors.black),
+                              ),
+                              flex: 8,
+                            ),
+                            Expanded(
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 15),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(5),
+                                      topRight: Radius.circular(5),
+                                      bottomLeft: Radius.circular(5),
+                                      bottomRight: Radius.circular(5)
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      spreadRadius: 1,
+                                      blurRadius: 1,
+                                      offset: Offset(0, 3), // changes position of shadow
+                                    ),
+                                  ],
+                                ),
+                                child: DropdownButton<Course>(
+                                  isExpanded: true,
+                                  value: currentCourse,
+                                  icon: const Icon(Icons.arrow_drop_down),
+                                  elevation: 16,
+                                  style: const TextStyle(fontSize: 16, color: Colors.black),
+                                  underline: Container(
+                                    height: 2,
+                                    color: Colors.white,
+                                  ),
+                                  onChanged: (Course newValue) {
+                                    setState(() {
+                                      currentCourse = newValue;
+                                    });
+                                  },
+                                  items: _allCourses
+                                      .map<DropdownMenuItem<Course>>((Course value) {
+                                    return DropdownMenuItem<Course>(
+                                      value: value,
+                                      child: Text(value.name),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+
+                              flex: 20,
+                            ),
+                          ],
+                        )
+                      ),
+
+                      // Select type
+                      Container(
+                          margin: EdgeInsets.symmetric(horizontal: marginH, vertical: marginV),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  "Type",
+                                  style: TextStyle(fontSize: 18, color: Colors.black),
+                                ),
+                                flex: 8,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 15),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(5),
+                                        topRight: Radius.circular(5),
+                                        bottomLeft: Radius.circular(5),
+                                        bottomRight: Radius.circular(5)
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 1,
+                                        blurRadius: 1,
+                                        offset: Offset(0, 3), // changes position of shadow
+                                      ),
+                                    ],
+                                  ),
+                                  child: DropdownButton<String>(
+                                    isExpanded: true,
+                                    value: _attributes['type'],
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    elevation: 16,
+                                    style: const TextStyle(fontSize: 16, color: Colors.black),
+                                    underline: Container(
+                                      height: 2,
+                                      color: Colors.white,
+                                    ),
+                                    onChanged: (String newValue) {
+                                      setState(() {
+                                        _attributes['type'] = newValue;
+                                      });
+                                    },
+                                    items: <String>['assignment', 'exam']
+                                        .map<DropdownMenuItem<String>>((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                                flex: 20,
+                              ),
+                            ],
+                          )
+                      ),
+
                       // Pick start date
                       Container(
-                        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                        margin: EdgeInsets.symmetric(horizontal: marginH, vertical: marginV),
                         child: Row(
                           children: [
                             Expanded(
@@ -284,7 +423,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
 
                       // Pick end date
                       Container(
-                        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                        margin: EdgeInsets.symmetric(horizontal: marginH, vertical: marginV),
                         child: Row(
                           children: [
                             Expanded(
@@ -347,6 +486,8 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                           ],
                         ),
                       ),
+
+
                     ],
                   )
                 ),
