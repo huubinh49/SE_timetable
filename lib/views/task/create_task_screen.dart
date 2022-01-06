@@ -38,8 +38,8 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     'name': '',
     'startDate': '', //DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now()),
     'endDate': '', //DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now()),
-    'notificationTime': '',
-    'topic': '',
+    'notificationTime': '', // deprecated
+    'topic': '', // deprecated
     'importantLevel': 1,
     'state': false,
     'note': '',
@@ -486,7 +486,78 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                         ),
                       ),
 
+                      // Select important level
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: marginH, vertical: marginV + 5),
+                        child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  "Important level",
+                                  style: TextStyle(fontSize: 18, color: Colors.black),
+                                ),
+                                flex: 8,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 1,
+                                        blurRadius: 1,
+                                        offset: Offset(0, 3), // changes position of shadow
+                                      ),
+                                    ],
+                                  ),
+                                  child: DropdownButton<int>(
+                                    icon: Visibility (
+                                      visible:false,
+                                        child: Icon(Icons.arrow_downward)
+                                    ),
+                                    value: _attributes['importantLevel'],
+                                    elevation: 16,
+                                    style: const TextStyle(fontSize: 16, color: Colors.black),
+                                    underline: SizedBox(),
+                                    onChanged: taskId != null ? null : (int newValue) {
+                                      setState(() {
+                                        _attributes['importantLevel'] = newValue;
+                                      });
+                                    },
+                                    items: <int>[1, 2, 3, 4, 5]
+                                        .map<DropdownMenuItem<int>>((int value) {
+                                            return DropdownMenuItem<int>(
+                                        value: value,
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          width: 32,
+                                          height: 32,
+                                          child: Text(value.toString()),
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: importantLevelColor[value],
+                                          )
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
 
+                                flex: 3,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  "Status",
+                                  style: TextStyle(fontSize: 18, color: Colors.black),
+                                ),
+                                flex: 10,
+                              ),
+                            ],
+                        )
+                      )
                     ],
                   )
                 ),
