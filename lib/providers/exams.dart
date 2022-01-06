@@ -17,7 +17,7 @@ class Exams with ChangeNotifier {
 
   Future<void> fetchAndSetDataExams() async {
     final url = Uri.parse(
-        'https://timetable-app-60033-default-rtdb.firebaseio.com/user/$userId/exams.json?auth=$authToken&orderBy"creatorId"&equalTo="$userId"');
+        'https://timetable-app-60033-default-rtdb.firebaseio.com/user/$userId/exams.json?auth=$authToken');
     try {
       final response = await http.get(url);
       // Convert json to flutter data by json.decode()

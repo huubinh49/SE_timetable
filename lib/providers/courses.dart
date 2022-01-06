@@ -19,7 +19,7 @@ class Courses with ChangeNotifier {
     // This tell Firebase that we want to filter by creator ID and only where it's equal to the userId
     // => Only these entries should be return, đọc cái rule trên firebase t sửa giùm
     final url = Uri.parse(
-        'https://timetable-app-60033-default-rtdb.firebaseio.com/user/$userId/courses.json?auth=$authToken&orderBy"creatorId"&equalTo="$userId"');
+        'https://timetable-app-60033-default-rtdb.firebaseio.com/user/$userId/courses.json?auth=$authToken');
     try {
       final response = await http.get(url);
       // Convert json to flutter data by json.decode()
