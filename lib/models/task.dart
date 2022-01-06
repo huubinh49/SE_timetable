@@ -49,7 +49,7 @@ abstract class Task extends AbstractThing {
         'name': name,
         'startDate': DateFormat('yyyy-MM-dd HH:mm').format(startDate),
         'endDate': DateFormat('yyyy-MM-dd HH:mm').format(endDate),
-        'notificationTime': DateFormat('yyyy-MM-dd HH:mm').format(notificationTime),
+        'notificationTime': '',
         'topic': topic,
         'note': note,
         'importantLevel': importantLevel,
