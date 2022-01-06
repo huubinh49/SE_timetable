@@ -45,11 +45,10 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     'note': '',
     'parentId': '',
     'progress': 0,
-    'isGroupProject': false,
+    'isGroupProject': false, // deprecated
     'room': '',
     'type': '',
   };
-
   void updateDateAttributes() {
     _startDate = DateTime(
       _startDate.year,
@@ -110,10 +109,19 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     final isValid = _formKey.currentState.validate();
     if (!isValid) return;
     _formKey.currentState.save();
+
+    updateDateAttributes();
+    if (_startDate.isAfter(_endDate)) {
+      final snackBar = SnackBar(
+          content: const Text('The start date must come before the end date'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return;
+    }
+
     setState(() { _isLoading = true; });
 
     _attributes['parentId'] = currentCourse.id;
-    updateDateAttributes();
     var task = _attributes['type'] == 'assignment' ?
       Assignment.fromMap(_attributes) : Exam.fromMap(_attributes);
 
@@ -588,7 +596,71 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                               )
                             ],
                         )
-                      )
+                      ),
+
+                      // Select exam room
+                      _attributes['type'] == 'assignment' ? SizedBox() : Container(
+                          margin: EdgeInsets.symmetric(horizontal: marginH, vertical: marginV + 5),
+                          padding: EdgeInsets.symmetric(vertical: 5),
+                          color: Colors.white,
+                          child: TextFormField(
+                            initialValue: _attributes['room'],
+                            keyboardType: TextInputType.streetAddress,
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(
+                                Icons.location_on_outlined,
+                                color: mainColor,
+                              ),
+                              fillColor: Colors.white,
+                              filled: true,
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: const Color(0xff0075FF),
+                                    width: 3.0),
+                              ),
+                              hintText: "Location",
+                              hintStyle: TextStyle(
+                                  fontSize: 14, color: hintText),
+                            ),
+                            style: TextStyle(
+                                fontSize: 16, color: Colors.black),
+                            validator: (value) {
+                              if (_attributes['type'] == 'exam' && value.isEmpty) {
+                                return "Please enter the location!";
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _attributes['room'] = value;
+                            },
+                          ),
+                        ),
+
+                      // Add note
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: marginH, vertical: marginV + 5),
+                        child: TextFormField(
+                          initialValue: _attributes['note'],
+                          keyboardType: TextInputType.multiline,
+                          textInputAction: TextInputAction.newline,
+                          maxLines: 8,
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            filled: true,
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: const Color(0xff0075FF), width: 3.0),
+                            ),
+                            hintText: "Add note",
+                            hintStyle:
+                            TextStyle(fontSize: 14, color: hintText),
+                          ),
+                          style: TextStyle(fontSize: 16, color: Colors.black),
+                          onSaved: (value) {
+                            _attributes['note'] = value;
+                          },
+                        ),
+                      ),
                     ],
                   )
                 ),
