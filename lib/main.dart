@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:timetable/providers/assignments.dart';
 import 'package:timetable/providers/auth.dart';
+import 'package:timetable/providers/exams.dart';
 import 'package:timetable/routes_app/route_management.dart';
 import 'package:timetable/views/authentication/sign_in_screen.dart';
 import 'package:timetable/providers/courses.dart';

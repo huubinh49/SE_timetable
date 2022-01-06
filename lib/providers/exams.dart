@@ -37,6 +37,7 @@ class Exams with ChangeNotifier {
           importantLevel: data['importantLevel'],
           state: data['state'],
           note: data['note'],
+          color: Color(data['color']).withOpacity(1),
           room: data['room'],
         ));
       });
@@ -112,6 +113,8 @@ class Exams with ChangeNotifier {
             'note': newExam.note,
             'room': newExam.room,
             'parentId': newExam.parentId,
+            'color': newExam.color,
+            'room': newExam.room,
           }));
       _items[examIndex] = newExam;
       notifyListeners();

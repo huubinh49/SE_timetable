@@ -39,6 +39,7 @@ class Assignments with ChangeNotifier {
           note: data['note'],
           progress: data['progress'],
           isGroupProject: data['isGroupProject']
+          // TODO: Color
         ));
       });
       _items = loadedAssignments;

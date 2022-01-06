@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:timetable/models/task.dart';
 
 class Exam extends Task {
@@ -10,6 +12,7 @@ class Exam extends Task {
       bool state,
       String note,
       String parentId,
+      Color color,
       this.room})
       : super(id, name, startDate, endDate,
             notificationTime: notificationTime,
@@ -17,7 +20,8 @@ class Exam extends Task {
             importantLevel: importantLevel,
             state: state,
             note: note,
-            parentId: parentId);
+            parentId: parentId,
+            color: color);
 
   Exam.fromMap(Map<String, dynamic> map)
       : assert(map['type'] == 'exam'),
@@ -31,6 +35,7 @@ class Exam extends Task {
           state: map['state'],
           note: map['note'],
           parentId: map['parentId']
+          color: map['color']
       ) {
     room = map['room'];
   }
@@ -39,8 +44,7 @@ class Exam extends Task {
   String get type => 'exam';
 
   @override
-  String toString() =>
-      'Exam(id: $id, name: $name, range: ${formatDate(startDate)} - ${formatDate(endDate)}, room: $room)';
+  String toString() => 'Exam(id: $id, name: $name, range: ${formatDate(startDate)} - ${formatDate(endDate)}, room: $room)';
 
   @override
   Map<String, dynamic> toMap() {
