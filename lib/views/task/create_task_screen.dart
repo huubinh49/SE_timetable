@@ -38,7 +38,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     'name': '',
     'startDate': '', //DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now()),
     'endDate': '', //DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now()),
-    'notificationTime': '',//DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now()),
+    'notificationTime': '',
     'topic': '',
     'importantLevel': 1,
     'state': false,
@@ -67,7 +67,6 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     );
     _attributes['startDate'] = DateFormat('yyyy-MM-dd HH:mm').format(_startDate);
     _attributes['endDate'] = DateFormat('yyyy-MM-dd HH:mm').format(_endDate);
-    _attributes['notificationTime'] = DateFormat('yyyy-MM-dd HH:mm').format(_endDate);
   }
 
   @override
@@ -335,12 +334,12 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                       height: 2,
                                       color: Colors.white,
                                     ),
-                                    onChanged: (String newValue) {
+                                    onChanged: taskId != null ? null : (String newValue) {
                                       setState(() {
                                         _attributes['type'] = newValue;
                                       });
                                     },
-                                    items: <String>['assignment', 'exam']
+                                    items: (taskId != null ? <String>[_attributes['type']] : <String>['assignment', 'exam'])
                                         .map<DropdownMenuItem<String>>((String value) {
                                       return DropdownMenuItem<String>(
                                         value: value,
