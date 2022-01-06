@@ -67,6 +67,7 @@ class Exams with ChangeNotifier {
             'state': exam.state,
             'note': exam.note,
             'room': exam.room,
+            'parentId': exam.parentId,
           },
         ),
       );
@@ -83,6 +84,7 @@ class Exams with ChangeNotifier {
           state: exam.state,
           note: exam.note,
           room: exam.room,
+          parentId: exam.parentId,
       );
       debugPrint(newExam.id);
       _items.insert(0, newExam);
@@ -109,6 +111,7 @@ class Exams with ChangeNotifier {
             'state': newExam.state,
             'note': newExam.note,
             'room': newExam.room,
+            'parentId': newExam.parentId,
           }));
       _items[examIndex] = newExam;
       notifyListeners();

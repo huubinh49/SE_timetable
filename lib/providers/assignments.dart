@@ -68,7 +68,8 @@ class Assignments with ChangeNotifier {
             'state': assignment.state,
             'note': assignment.note,
             'progress': assignment.progress,
-            'isGroupProject': assignment.isGroupProject
+            'isGroupProject': assignment.isGroupProject,
+            'parentId': assignment.parentId,
           },
         ),
       );
@@ -85,7 +86,8 @@ class Assignments with ChangeNotifier {
           state: assignment.state,
           note: assignment.note,
           progress: assignment.progress,
-          isGroupProject: assignment.isGroupProject
+          isGroupProject: assignment.isGroupProject,
+          parentId: assignment.parentId,
       );
       debugPrint(newAssignment.id);
       _items.insert(0, newAssignment);
@@ -112,7 +114,8 @@ class Assignments with ChangeNotifier {
             'state': newAssignment.state,
             'note': newAssignment.note,
             'progress': newAssignment.progress,
-            'isGroupProject': newAssignment.isGroupProject
+            'isGroupProject': newAssignment.isGroupProject,
+            'parentId': newAssignment.parentId,
           }));
       _items[assignmentIndex] = newAssignment;
       notifyListeners();
