@@ -172,6 +172,18 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Color getCheckboxColor(Set<MaterialState> states) {
+      const Set<MaterialState> interactiveStates = <MaterialState>{
+        MaterialState.pressed,
+        MaterialState.hovered,
+        MaterialState.focused,
+      };
+      if (states.any(interactiveStates.contains)) {
+        return mainColor;
+      }
+      return mainColor;
+    }
+
     return Scaffold(
       backgroundColor: Color(0xfffffcf0),
       appBar: AppBar(
@@ -486,7 +498,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                         ),
                       ),
 
-                      // Select important level
+                      // Select important level, status
                       Container(
                         margin: EdgeInsets.symmetric(horizontal: marginH, vertical: marginV + 5),
                         child: Row(
@@ -545,16 +557,35 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                     }).toList(),
                                   ),
                                 ),
-
                                 flex: 3,
                               ),
                               Expanded(
-                                child: Text(
-                                  "Status",
-                                  style: TextStyle(fontSize: 18, color: Colors.black),
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 25),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "Status",
+                                        style: TextStyle(fontSize: 18, color: Colors.black),
+                                      ),
+                                      Transform.scale(
+                                        scale: 1.5,
+                                        child: Checkbox(
+                                          checkColor: Colors.white,
+                                          fillColor: MaterialStateProperty.resolveWith(getCheckboxColor),
+                                          value: _attributes['state'],
+                                          onChanged: (bool value) {
+                                            setState(() {
+                                              _attributes['state'] = value;
+                                            });
+                                          },
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                                flex: 10,
-                              ),
+                                flex: 9,
+                              )
                             ],
                         )
                       )
