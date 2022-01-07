@@ -308,18 +308,18 @@ class _TaskScreenState extends State<TaskScreen> {
                                   ),
                                   Expanded(
                                     child: Slider(
-                                      activeColor: Colors.black,
+                                      activeColor: task.color,
+                                      inactiveColor: task.color,
                                       value: task.progress.toDouble(),
                                       max: 100,
-                                      divisions: 5,
-                                      label: task.progress.toString(),
-                                      onChanged: null,
+                                      divisions: 20,
+                                      onChanged: (double value) {},
                                     ),
                                     flex: 12,
                                   ),
                                   Expanded(
                                     child: Text(
-                                      task.progress.toString() + ' %',
+                                      task.progress.toInt().toString() + ' %',
                                       style: TextStyle(fontSize: 18, color: Colors.black),
                                     ),
                                     flex: 8,

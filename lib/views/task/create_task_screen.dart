@@ -35,7 +35,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
   List<Course> _allCourses;
   Course currentCourse;
   Color taskColor;
-  var _attributes = {
+  Map<String, dynamic> _attributes = {
     'id': '',
     'name': '',
     'startDate': '', //DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now()),
@@ -47,7 +47,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     'note': '',
     'parentId': '',
     'color': 0,
-    'progress': 0,
+    'progress': 0.0,
     'isGroupProject': false, // deprecated
     'room': '',
     'type': '',
@@ -103,7 +103,6 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
         _startDate = DateTime.now();
         _endDate = DateTime.now();
       }
-
       _startTime = TimeOfDay(hour: _startDate.hour, minute: _startDate.minute);
       _endTime = TimeOfDay(hour: _endDate.hour, minute: _endDate.minute);
       if (taskId == null) updateDateAttributes();
@@ -603,8 +602,46 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                         )
                       ),
 
-                      // Select exam room
-                      _attributes['type'] == 'assignment' ? SizedBox() : Container(
+                      _attributes['type'] == 'assignment' ?
+                        // Adjust assignment progress
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: marginH, vertical: marginV + 5),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                "Progress",
+                                style: TextStyle(fontSize: 18, color: Colors.black),
+                              ),
+                              flex: 8,
+                            ),
+                            Expanded(
+                              child: Slider(
+                                activeColor: taskColor,
+                                inactiveColor: taskColor,
+                                value: _attributes['progress'].toDouble(),
+                                max: 100,
+                                divisions: 20,
+                                onChanged: (double value) {
+                                  setState(() {
+                                    _attributes['progress'] = value.toInt();
+                                  });
+                                },
+                              ),
+                              flex: 12,
+                            ),
+                            Expanded(
+                              child: Text(
+                                _attributes['progress'].toString() + ' %',
+                                style: TextStyle(fontSize: 18, color: Colors.black),
+                              ),
+                              flex: 8,
+                            ),
+                          ],
+                        ),
+                      ) :
+                        // Select exam location
+                        Container(
                           margin: EdgeInsets.symmetric(horizontal: marginH, vertical: marginV + 5),
                           padding: EdgeInsets.symmetric(vertical: 5),
                           color: Colors.white,
