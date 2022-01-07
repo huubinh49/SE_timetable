@@ -418,9 +418,11 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                 style: ButtonStyle(
                                   backgroundColor:
                                     MaterialStateProperty.all(
-                                        taskColor)),
-                                icon: Icon(Icons.access_time),
-                                label: Text(_startTime.format(context)),
+                                        Colors.white)),
+                                icon: Icon(Icons.access_time, color: Colors.black),
+                                label: Text(_startTime.format(context),
+                                  style: TextStyle(color: Colors.black),
+                                ),
                                 onPressed: () {
                                   showMaterialTimePicker(
                                     context: context,
@@ -484,9 +486,11 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                 style: ButtonStyle(
                                     backgroundColor:
                                     MaterialStateProperty.all(
-                                        taskColor)),
-                                icon: Icon(Icons.access_time),
-                                label: Text(_endTime.format(context)),
+                                        Colors.white)),
+                                icon: Icon(Icons.access_time, color: Colors.black,),
+                                label: Text(_endTime.format(context),
+                                  style: TextStyle(color: Colors.black),
+                                ),
                                 onPressed: () {
                                   showMaterialTimePicker(
                                     context: context,

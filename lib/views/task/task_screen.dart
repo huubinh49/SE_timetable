@@ -26,7 +26,7 @@ class TaskScreen extends StatefulWidget {
 
 class _TaskScreenState extends State<TaskScreen> {
   double marginH = 15;
-  double marginV = 8;
+  double marginV = 5;
 
   bool _isInit = true;
   bool _isLoading = false;
@@ -234,11 +234,11 @@ class _TaskScreenState extends State<TaskScreen> {
                                   child: ElevatedButton.icon(
                                     style: ButtonStyle(
                                         backgroundColor:
-                                          MaterialStateProperty.all(task.color)
+                                          MaterialStateProperty.all(Colors.white)
                                     ),
-                                    icon: Icon(Icons.access_time, color: Colors.white,),
+                                    icon: Icon(Icons.access_time, color: Colors.black,),
                                     label: Text(startTime.format(context),
-                                      style: TextStyle(color: Colors.white)
+                                      style: TextStyle(color: Colors.black)
                                     ),
                                     onPressed: (){},
                                   ),
@@ -279,11 +279,11 @@ class _TaskScreenState extends State<TaskScreen> {
                                   child: ElevatedButton.icon(
                                     style: ButtonStyle(
                                         backgroundColor:
-                                        MaterialStateProperty.all(task.color)
+                                        MaterialStateProperty.all(Colors.white)
                                     ),
-                                    icon: Icon(Icons.access_time, color: Colors.white,),
+                                    icon: Icon(Icons.access_time, color: Colors.black,),
                                     label: Text(endTime.format(context),
-                                        style: TextStyle(color: Colors.white)
+                                        style: TextStyle(color: Colors.black)
                                     ),
                                     onPressed: (){},
                                   ),
@@ -291,6 +291,49 @@ class _TaskScreenState extends State<TaskScreen> {
                                 ),
                               ],
                             ),
+                          ),
+
+                          // Important level
+                          Container(
+                              margin: EdgeInsets.symmetric(horizontal: marginH, vertical: marginV + 5),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    "Important level",
+                                    style: TextStyle(fontSize: 18, color: Colors.black),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.symmetric(horizontal: 20),
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.5),
+                                          spreadRadius: 1,
+                                          blurRadius: 1,
+                                          offset: Offset(0, 3), // changes position of shadow
+                                        ),
+                                      ],
+                                    ),
+                                    child: Container(
+                                        alignment: Alignment.center,
+                                        width: 40,
+                                        height: 40,
+                                        child: Text(task.importantLevel.toString(),
+                                          style: TextStyle(
+                                            fontSize: 18
+                                          )
+                                        ),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: importantLevelColor[task.importantLevel],
+                                        )
+                                    ),
+                                  ),
+                                ],
+                              )
                           ),
                         ],
                       ),
