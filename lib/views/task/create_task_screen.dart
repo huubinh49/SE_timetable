@@ -43,7 +43,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     'notificationTime': '', // deprecated
     'topic': '', // deprecated
     'importantLevel': 1,
-    'state': false,
+    'state': false, // deprecated
     'note': '',
     'parentId': '',
     'color': 0,
@@ -91,6 +91,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
           var exam = Provider.of<Exams>(context, listen: false).findById(taskId);
           _attributes.addAll(exam.toMap());
         }
+        taskColor = Color(_attributes['color']);
         currentCourse = _allCourses.firstWhere((item) => item.id == _attributes['parentId']);
         _startDate = DateTime.parse(_attributes['startDate']);
         _endDate = DateTime.parse(_attributes['endDate']);
@@ -193,7 +194,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
       backgroundColor: Color(0xfffffcf0),
       appBar: AppBar(
         title: Text((taskId == null ? 'Create ' : 'Edit ') + _attributes['type']),
-        backgroundColor: mainColor,
+        backgroundColor: taskColor,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.check, color: Colors.white),
@@ -417,7 +418,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                 style: ButtonStyle(
                                   backgroundColor:
                                     MaterialStateProperty.all(
-                                        Colors.redAccent)),
+                                        taskColor)),
                                 icon: Icon(Icons.access_time),
                                 label: Text(_startTime.format(context)),
                                 onPressed: () {
@@ -483,7 +484,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                 style: ButtonStyle(
                                     backgroundColor:
                                     MaterialStateProperty.all(
-                                        Colors.redAccent)),
+                                        taskColor)),
                                 icon: Icon(Icons.access_time),
                                 label: Text(_endTime.format(context)),
                                 onPressed: () {
