@@ -37,7 +37,7 @@ class Exams with ChangeNotifier {
           importantLevel: data['importantLevel'],
           state: data['state'],
           note: data['note'],
-          color: Color(data['color']).withOpacity(1),
+          color: Color(data['color']),//.withOpacity(1),
           room: data['room'],
         ));
       });
@@ -69,14 +69,15 @@ class Exams with ChangeNotifier {
             'note': exam.note,
             'room': exam.room,
             'parentId': exam.parentId,
+            'color': exam.color.value,
           },
         ),
       );
       // Use async function to wait for post data and get the response => Can get ID from the response
       // ID = json.decode(response.body)['name']
       final newExam = Exam(
-        json.decode(response.body)['name'],
-        exam.name,
+          json.decode(response.body)['name'],
+          exam.name,
           exam.startDate,
           exam.endDate,
           notificationTime: exam.notificationTime,
@@ -86,6 +87,7 @@ class Exams with ChangeNotifier {
           note: exam.note,
           room: exam.room,
           parentId: exam.parentId,
+          color: exam.color,
       );
       debugPrint(newExam.id);
       _items.insert(0, newExam);
@@ -113,7 +115,7 @@ class Exams with ChangeNotifier {
             'note': newExam.note,
             'room': newExam.room,
             'parentId': newExam.parentId,
-            'color': newExam.color,
+            'color': newExam.color.value,
             'room': newExam.room,
           }));
       _items[examIndex] = newExam;

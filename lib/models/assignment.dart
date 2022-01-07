@@ -38,7 +38,7 @@ class Assignment extends Task {
           state: map['state'],
           note: map['note'],
           parentId: map['parentId'],
-          color: map['color']
+          color: Color(map['color']),
         ) {
     progress = map['progress'];
     isGroupProject = map['isGroupProject'];

@@ -38,8 +38,8 @@ class Assignments with ChangeNotifier {
           state: data['state'],
           note: data['note'],
           progress: data['progress'],
-          isGroupProject: data['isGroupProject']
-          // TODO: Color
+          isGroupProject: data['isGroupProject'],
+          color: Color(data['color']),
         ));
       });
       _items = loadedAssignments;
@@ -71,14 +71,15 @@ class Assignments with ChangeNotifier {
             'progress': assignment.progress,
             'isGroupProject': assignment.isGroupProject,
             'parentId': assignment.parentId,
+            'color': assignment.color.value,
           },
         ),
       );
       // Use async function to wait for post data and get the response => Can get ID from the response
       // ID = json.decode(response.body)['name']
       final newAssignment = Assignment(
-        json.decode(response.body)['name'],
-        assignment.name,
+          json.decode(response.body)['name'],
+          assignment.name,
           assignment.startDate,
           assignment.endDate,
           notificationTime: assignment.notificationTime,
@@ -89,6 +90,7 @@ class Assignments with ChangeNotifier {
           progress: assignment.progress,
           isGroupProject: assignment.isGroupProject,
           parentId: assignment.parentId,
+          color: assignment.color,
       );
       debugPrint(newAssignment.id);
       _items.insert(0, newAssignment);
@@ -117,6 +119,7 @@ class Assignments with ChangeNotifier {
             'progress': newAssignment.progress,
             'isGroupProject': newAssignment.isGroupProject,
             'parentId': newAssignment.parentId,
+            'color': newAssignment.color.value,
           }));
       _items[assignmentIndex] = newAssignment;
       notifyListeners();

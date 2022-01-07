@@ -60,7 +60,7 @@ abstract class Task extends AbstractThing {
         'importantLevel': importantLevel,
         'state': state,
         'parentId': parentId,
-        'color': color
+        'color': color.value,
       };
 
   String get type;

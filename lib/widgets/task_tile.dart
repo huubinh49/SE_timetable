@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:timetable/constants/texts.dart';
 import 'package:timetable/models/task.dart';
-import 'package:timetable/views/task/task_screen.dart';
+// import 'package:timetable/views/task/task_screen.dart';
 
 class TaskTile extends StatelessWidget {
   final String id;
@@ -25,7 +25,7 @@ class TaskTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pushNamed(TaskScreen.routeName, arguments: id);
+        // Navigator.of(context).pushNamed(TaskScreen.routeName, arguments: id);
       },
       child: Container(
         decoration: BoxDecoration(

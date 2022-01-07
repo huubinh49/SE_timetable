@@ -143,7 +143,10 @@ class _TaskListScreenState extends State<TaskListScreen> {
           child: Icon(Icons.add), //child widget inside this button
           onPressed: (){
             //task to execute when this button is pressed
-            Navigator.of(context).pushNamed(CreateTaskScreen.routeName);
+            Navigator.of(context).pushNamed(
+                CreateTaskScreen.routeName,
+                arguments: {'taskId': null, 'type': 'assignment'}
+            );
           },
         ),
       ),

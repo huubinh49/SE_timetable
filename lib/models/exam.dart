@@ -34,8 +34,8 @@ class Exam extends Task {
           importantLevel: map['importantLevel'],
           state: map['state'],
           note: map['note'],
-          parentId: map['parentId']
-          color: map['color']
+          parentId: map['parentId'],
+          color: Color(map['color']),
       ) {
     room = map['room'];
   }

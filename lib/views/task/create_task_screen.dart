@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/helpers/show_date_picker.dart';
+import 'package:flutter_material_pickers/helpers/show_swatch_picker.dart';
 import 'package:flutter_material_pickers/helpers/show_time_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -33,6 +34,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
   TimeOfDay _endTime;
   List<Course> _allCourses;
   Course currentCourse;
+  Color taskColor;
   var _attributes = {
     'id': '',
     'name': '',
@@ -44,11 +46,13 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     'state': false,
     'note': '',
     'parentId': '',
+    'color': 0,
     'progress': 0,
     'isGroupProject': false, // deprecated
     'room': '',
     'type': '',
   };
+
   void updateDateAttributes() {
     _startDate = DateTime(
       _startDate.year,
@@ -92,6 +96,8 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
         _endDate = DateTime.parse(_attributes['endDate']);
       }
       else {
+        taskColor = mainColor;
+        _attributes['color'] = mainColor.value;
         currentCourse = _allCourses[0];
         _startDate = DateTime.now();
         _endDate = DateTime.now();
@@ -180,18 +186,6 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Color getCheckboxColor(Set<MaterialState> states) {
-      const Set<MaterialState> interactiveStates = <MaterialState>{
-        MaterialState.pressed,
-        MaterialState.hovered,
-        MaterialState.focused,
-      };
-      if (states.any(interactiveStates.contains)) {
-        return mainColor;
-      }
-      return mainColor;
-    }
-
     return Scaffold(
       backgroundColor: Color(0xfffffcf0),
       appBar: AppBar(
@@ -506,7 +500,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                         ),
                       ),
 
-                      // Select important level, status
+                      // Select important level, color
                       Container(
                         margin: EdgeInsets.symmetric(horizontal: marginH, vertical: marginV + 5),
                         child: Row(
@@ -569,26 +563,32 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                               ),
                               Expanded(
                                 child: Container(
-                                  margin: EdgeInsets.symmetric(horizontal: 25),
+                                  margin: EdgeInsets.symmetric(horizontal: 20),
                                   child: Row(
                                     children: [
                                       Text(
-                                        "Status",
+                                        "Color",
                                         style: TextStyle(fontSize: 18, color: Colors.black),
                                       ),
-                                      Transform.scale(
-                                        scale: 1.5,
-                                        child: Checkbox(
-                                          checkColor: Colors.white,
-                                          fillColor: MaterialStateProperty.resolveWith(getCheckboxColor),
-                                          value: _attributes['state'],
-                                          onChanged: (bool value) {
-                                            setState(() {
-                                              _attributes['state'] = value;
-                                            });
+                                      SizedBox(
+                                        height: 36,
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            primary: taskColor,
+                                            shape: CircleBorder(), // background
+                                          ),
+                                          onPressed: () {
+                                            showMaterialSwatchPicker(
+                                              context: context,
+                                              selectedColor: Colors.blue,
+                                              onChanged: (value) => setState(() {
+                                                taskColor = value;
+                                                _attributes['color'] = taskColor.value;
+                                              }),
+                                            );
                                           },
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),
