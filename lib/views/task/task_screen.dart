@@ -1,19 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_material_pickers/helpers/show_date_picker.dart';
-import 'package:flutter_material_pickers/helpers/show_swatch_picker.dart';
-import 'package:flutter_material_pickers/helpers/show_time_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:timetable/constants/colors.dart';
-import 'package:timetable/constants/texts.dart';
-import 'package:timetable/models/assignment.dart';
-import 'package:timetable/models/exam.dart';
-import 'package:timetable/models/course.dart';
-import 'package:timetable/models/task.dart';
 import 'package:timetable/providers/assignments.dart';
 import 'package:timetable/providers/courses.dart';
 import 'package:timetable/providers/exams.dart';
-import 'package:timetable/views/task/task_list_screen.dart';
 
 import 'create_task_screen.dart';
 
