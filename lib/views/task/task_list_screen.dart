@@ -54,10 +54,10 @@ class _TaskListScreenState extends State<TaskListScreen> {
       return a.endDate.compareTo(b.endDate);
     });
     assignments.sort((a,b) {
-    return a.endDate.compareTo(b.endDate);
+      return a.endDate.compareTo(b.endDate);
     });
     exams.sort((a,b) {
-    return a.endDate.compareTo(b.endDate);
+      return a.endDate.compareTo(b.endDate);
     });
     return DefaultTabController(
       length: 3,
@@ -90,7 +90,10 @@ class _TaskListScreenState extends State<TaskListScreen> {
                       endDate: tasks[i].endDate,
                       state: tasks[i].state,
                       color: tasks[i].color,
-                      parentId: tasks[i].parentId,
+                      courseName: tasks[i].parentId == ''
+                          ? 'No course selected'
+                          : Provider.of<Courses>(context).findById(tasks[i].parentId).name,
+                      type: tasks[i].type,
                     ),
                     Divider(),
                   ],
@@ -109,7 +112,10 @@ class _TaskListScreenState extends State<TaskListScreen> {
                       endDate: assignments[i].endDate,
                       state: assignments[i].state,
                       color: assignments[i].color,
-                      parentId: assignments[i].parentId,
+                      courseName: assignments[i].parentId == ''
+                          ? 'No course selected'
+                          : Provider.of<Courses>(context).findById(assignments[i].parentId).name,
+                      type: assignments[i].type,
                     ),
                     Divider(),
                   ],
@@ -128,7 +134,10 @@ class _TaskListScreenState extends State<TaskListScreen> {
                       endDate: exams[i].endDate,
                       state: exams[i].state,
                       color: exams[i].color,
-                      parentId: exams[i].parentId,
+                      courseName: exams[i].parentId == ''
+                          ? 'No course selected'
+                          : Provider.of<Courses>(context).findById(exams[i].parentId).name,
+                      type: exams[i].type,
                     ),
                     Divider(),
                   ],

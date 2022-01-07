@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_material_pickers/helpers/show_date_picker.dart';
 import 'package:flutter_material_pickers/helpers/show_swatch_picker.dart';
 import 'package:flutter_material_pickers/helpers/show_time_picker.dart';
@@ -91,7 +92,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
           var exam = Provider.of<Exams>(context, listen: false).findById(taskId);
           _attributes.addAll(exam.toMap());
         }
-        currentCourse = _allCourses.firstWhere((item) => item.id == taskId);
+        currentCourse = _allCourses.firstWhere((item) => item.id == _attributes['parentId']);
         _startDate = DateTime.parse(_attributes['startDate']);
         _endDate = DateTime.parse(_attributes['endDate']);
       }
@@ -137,8 +138,8 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
           .updateAssignment(taskId, task);
       }
       else {
-        await Provider.of<Assignments>(context, listen: false)
-            .updateAssignment(taskId, task);
+        await Provider.of<Exams>(context, listen: false)
+            .updateExam(taskId, task);
       }
     }
     else {
@@ -528,15 +529,12 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                                     ],
                                   ),
                                   child: DropdownButton<int>(
-                                    icon: Visibility (
-                                      visible:false,
-                                        child: Icon(Icons.arrow_downward)
-                                    ),
+                                    icon: SizedBox(),
                                     value: _attributes['importantLevel'],
                                     elevation: 16,
                                     style: const TextStyle(fontSize: 16, color: Colors.black),
                                     underline: SizedBox(),
-                                    onChanged: taskId != null ? null : (int newValue) {
+                                    onChanged: (int newValue) {
                                       setState(() {
                                         _attributes['importantLevel'] = newValue;
                                       });
