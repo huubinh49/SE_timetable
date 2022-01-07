@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:timetable/constants/colors.dart';
 import 'package:timetable/models/assignment.dart';
+import 'package:timetable/models/course.dart';
 import 'package:timetable/models/task.dart';
 import 'package:timetable/providers/assignments.dart';
+import 'package:timetable/providers/courses.dart';
 import 'package:timetable/providers/exams.dart';
 import 'package:timetable/widgets/app_drawer.dart';
 import 'package:timetable/widgets/task_tile.dart';
@@ -28,14 +30,11 @@ class _TaskListScreenState extends State<TaskListScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<Assignments>(context).fetchAndSetDataAssignments().catchError((error) => {
-      }).whenComplete(() => {
-        setState(() {
-          _isLoading = false;
-        })
-      });
-      Provider.of<Exams>(context).fetchAndSetDataExams().catchError((error) => {
-      }).whenComplete(() => {
+      Future.wait([
+        Provider.of<Assignments>(context).fetchAndSetDataAssignments(),
+        Provider.of<Exams>(context).fetchAndSetDataExams(),
+        Provider.of<Courses>(context).fetchAndSetDataCourses(),
+      ]).catchError((error) => {}).whenComplete(() => {
         setState(() {
           _isLoading = false;
         })
@@ -47,17 +46,17 @@ class _TaskListScreenState extends State<TaskListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final assignmentData = Provider.of<Assignments>(context);
-    final examData = Provider.of<Exams>(context);
-    final List<Task> taskData = assignmentData.items.cast();
-    taskData.addAll(examData.items.cast());
-    taskData.sort((a,b) {
+    final assignments = Provider.of<Assignments>(context).items;
+    final exams = Provider.of<Exams>(context).items;
+    final List<Task> tasks = [...assignments];
+    tasks.addAll([...exams]);
+    tasks.sort((a,b) {
       return a.endDate.compareTo(b.endDate);
     });
-    assignmentData.items.sort((a,b) {
+    assignments.sort((a,b) {
     return a.endDate.compareTo(b.endDate);
     });
-    examData.items.sort((a,b) {
+    exams.sort((a,b) {
     return a.endDate.compareTo(b.endDate);
     });
     return DefaultTabController(
@@ -82,59 +81,59 @@ class _TaskListScreenState extends State<TaskListScreen> {
           children: [
             _isLoading ? Center(child: CircularProgressIndicator(),) : Padding(
               padding: EdgeInsets.all(8),
-              child: taskData.isEmpty ? Center(child: Text('You not add task yet!', style: TextStyle(fontSize: 20),),) : ListView.builder(
+              child: tasks.isEmpty ? Center(child: Text('You not add task yet!', style: TextStyle(fontSize: 20),),) : ListView.builder(
                 itemBuilder: (ctx, i) => Column(
                   children: [
                     TaskTile(
-                      id: taskData[i].id,
-                      name: taskData[i].name,
-                      endDate: taskData[i].endDate,
-                      state: taskData[i].state,
-                      color: taskData[i].color,
-                      parentId: taskData[i].parentId,
+                      id: tasks[i].id,
+                      name: tasks[i].name,
+                      endDate: tasks[i].endDate,
+                      state: tasks[i].state,
+                      color: tasks[i].color,
+                      parentId: tasks[i].parentId,
                     ),
                     Divider(),
                   ],
                 ),
-              itemCount: taskData.length,
+              itemCount: tasks.length,
               ),
             ),
             _isLoading ? Center(child: CircularProgressIndicator(),) : Padding(
               padding: EdgeInsets.all(8),
-              child: assignmentData.items.isEmpty ? Center(child: Text('You not add task yet!', style: TextStyle(fontSize: 20),),) : ListView.builder(
+              child: assignments.isEmpty ? Center(child: Text('You not add task yet!', style: TextStyle(fontSize: 20),),) : ListView.builder(
                 itemBuilder: (ctx, i) => Column(
                   children: [
                     TaskTile(
-                      id: assignmentData.items[i].id,
-                      name: assignmentData.items[i].name,
-                      endDate: assignmentData.items[i].endDate,
-                      state: assignmentData.items[i].state,
-                      color: assignmentData.items[i].color,
-                      parentId: assignmentData.items[i].parentId,
+                      id: assignments[i].id,
+                      name: assignments[i].name,
+                      endDate: assignments[i].endDate,
+                      state: assignments[i].state,
+                      color: assignments[i].color,
+                      parentId: assignments[i].parentId,
                     ),
                     Divider(),
                   ],
                 ),
-                itemCount: assignmentData.items.length,
+                itemCount: assignments.length,
               ),
             ),
             _isLoading ? Center(child: CircularProgressIndicator(),) : Padding(
               padding: EdgeInsets.all(8),
-              child: examData.items.isEmpty ? Center(child: Text('You not add task yet!', style: TextStyle(fontSize: 20),),) : ListView.builder(
+              child: exams.isEmpty ? Center(child: Text('You not add task yet!', style: TextStyle(fontSize: 20),),) : ListView.builder(
                 itemBuilder: (ctx, i) => Column(
                   children: [
                     TaskTile(
-                      id: examData.items[i].id,
-                      name: examData.items[i].name,
-                      endDate: examData.items[i].endDate,
-                      state: examData.items[i].state,
-                      color: examData.items[i].color,
-                      parentId: examData.items[i].parentId,
+                      id: exams[i].id,
+                      name: exams[i].name,
+                      endDate: exams[i].endDate,
+                      state: exams[i].state,
+                      color: exams[i].color,
+                      parentId: exams[i].parentId,
                     ),
                     Divider(),
                   ],
                 ),
-                itemCount: examData.items.length,
+                itemCount: exams.length,
               ),
             ),
         ],
