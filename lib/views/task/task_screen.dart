@@ -165,8 +165,8 @@ class _TaskScreenState extends State<TaskScreen> {
                         boxShadow: [
                           BoxShadow(
                             color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 3,
-                            blurRadius: 3,
+                            spreadRadius: 2,
+                            blurRadius: 2,
                             offset: Offset(0, 3), // changes position of shadow
                           ),
                         ],
@@ -293,47 +293,143 @@ class _TaskScreenState extends State<TaskScreen> {
                             ),
                           ),
 
+                          type == 'assignment' ?
+                            // Progress
+                            Container(
+                              margin: EdgeInsets.symmetric(horizontal: marginH, vertical: marginV + 5),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      "Progress",
+                                      style: TextStyle(fontSize: 18, color: Colors.black),
+                                    ),
+                                    flex: 8,
+                                  ),
+                                  Expanded(
+                                    child: Slider(
+                                      activeColor: Colors.black,
+                                      value: task.progress.toDouble(),
+                                      max: 100,
+                                      divisions: 5,
+                                      label: task.progress.toString(),
+                                      onChanged: null,
+                                    ),
+                                    flex: 12,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      task.progress.toString() + ' %',
+                                      style: TextStyle(fontSize: 18, color: Colors.black),
+                                    ),
+                                    flex: 8,
+                                  ),
+                                ],
+                              ),
+                            ) :
+                            // Room
+                            Container(
+                              margin: EdgeInsets.symmetric(horizontal: marginH, vertical: marginV + 5),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      'Location',
+                                      style: TextStyle(fontSize: 18, color: Colors.black),
+                                    ),
+                                    flex: 8,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      task.room,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold
+                                      ),
+                                    ),
+                                    flex: 20,
+                                  ),
+                                ],
+                              ),
+                            ),
+
                           // Important level
                           Container(
                               margin: EdgeInsets.symmetric(horizontal: marginH, vertical: marginV + 5),
                               child: Row(
                                 children: [
-                                  Text(
-                                    "Important level",
-                                    style: TextStyle(fontSize: 18, color: Colors.black),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.symmetric(horizontal: 20),
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.circle,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.5),
-                                          spreadRadius: 1,
-                                          blurRadius: 1,
-                                          offset: Offset(0, 3), // changes position of shadow
-                                        ),
-                                      ],
+                                  Expanded(
+                                    child: Text(
+                                      "Important level",
+                                      style: TextStyle(fontSize: 18, color: Colors.black),
                                     ),
+                                    flex: 4,
+                                  ),
+                                  Expanded(
                                     child: Container(
-                                        alignment: Alignment.center,
-                                        width: 40,
-                                        height: 40,
-                                        child: Text(task.importantLevel.toString(),
-                                          style: TextStyle(
-                                            fontSize: 18
+                                      margin: EdgeInsets.symmetric(horizontal: 20),
+                                      alignment: Alignment.centerLeft,
+                                      child: Container(
+                                          alignment: Alignment.center,
+                                          width: 40,
+                                          height: 40,
+                                          child: Text(task.importantLevel.toString(),
+                                              style: TextStyle(
+                                                  fontSize: 18
+                                              )
+                                          ),
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: importantLevelColor[task.importantLevel],
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey.withOpacity(0.5),
+                                                spreadRadius: 1,
+                                                blurRadius: 1,
+                                                offset: Offset(0, 3), // changes position of shadow
+                                              ),
+                                            ],
                                           )
-                                        ),
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: importantLevelColor[task.importantLevel],
-                                        )
+                                      ),
                                     ),
-                                  ),
+                                    flex: 6,
+                                  )
+                                  ,
                                 ],
                               )
+                          ),
+
+                          // Note
+                          Container(
+                            width: double.infinity,
+                            height: 300,
+                            margin: EdgeInsets.symmetric(horizontal: marginH, vertical: marginV + 5),
+                            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(30),
+                                  topRight: Radius.circular(30),
+                                  bottomLeft: Radius.circular(30),
+                                  bottomRight: Radius.circular(30)
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 2,
+                                  offset: Offset(0, 3), // changes position of shadow
+                                ),
+                              ],
+                            ),
+                            child: Text(
+                              task.note == '' ? 'No notes added yet' : task.note,
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: task.note == '' ? Colors.grey : Colors.black
+                              ),
+                            ),
                           ),
                         ],
                       ),
