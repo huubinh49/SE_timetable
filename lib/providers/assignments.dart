@@ -40,6 +40,7 @@ class Assignments with ChangeNotifier {
           progress: data['progress'],
           isGroupProject: data['isGroupProject'],
           color: Color(data['color']),
+          parentId: data['parentId'],
         ));
       });
       _items = loadedAssignments;

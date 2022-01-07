@@ -39,6 +39,7 @@ class Exams with ChangeNotifier {
           note: data['note'],
           color: Color(data['color']),//.withOpacity(1),
           room: data['room'],
+          parentId: data['parentId']
         ));
       });
       _items = loadedExams;
@@ -116,7 +117,6 @@ class Exams with ChangeNotifier {
             'room': newExam.room,
             'parentId': newExam.parentId,
             'color': newExam.color.value,
-            'room': newExam.room,
           }));
       _items[examIndex] = newExam;
       notifyListeners();
