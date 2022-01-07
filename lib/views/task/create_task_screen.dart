@@ -12,7 +12,6 @@ import 'package:timetable/models/course.dart';
 import 'package:timetable/providers/assignments.dart';
 import 'package:timetable/providers/courses.dart';
 import 'package:timetable/providers/exams.dart';
-import 'package:timetable/views/task/task_list_screen.dart';
 
 class CreateTaskScreen extends StatefulWidget {
   static String routeName = "create_task_screen";
@@ -182,7 +181,10 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     setState(() {
       _isLoading = false;
     });
-    Navigator.of(context).popAndPushNamed(TaskListScreen.routeName);
+    if (taskId == null) // create
+      Navigator.of(context).pop();
+    else
+      Navigator.of(context).pop(task);
   }
 
   @override

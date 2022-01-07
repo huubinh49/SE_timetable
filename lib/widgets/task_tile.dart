@@ -29,7 +29,7 @@ class TaskTile extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).pushNamed(
-            CreateTaskScreen.routeName,
+            TaskScreen.routeName,
             arguments: {'taskId': id, 'type': type});
       },
       child: Container(
