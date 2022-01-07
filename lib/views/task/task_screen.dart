@@ -5,6 +5,7 @@ import 'package:flutter_material_pickers/helpers/show_time_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:timetable/constants/colors.dart';
+import 'package:timetable/constants/texts.dart';
 import 'package:timetable/models/assignment.dart';
 import 'package:timetable/models/exam.dart';
 import 'package:timetable/models/course.dart';
@@ -104,18 +105,35 @@ class _TaskScreenState extends State<TaskScreen> {
         CreateTaskScreen.routeName,
         arguments: {'taskId': task.id, 'type': type}
     );
-    setState(() {
-      task = resultTask;
-    });
+    if (resultTask != null)
+      setState(() {
+        task = resultTask;
+      });
   }
 
   @override
   Widget build(BuildContext context) {
+    String courseName = task.parentId == ''
+        ? 'No course selected'
+        : 'Course: ' + Provider.of<Courses>(context, listen: false)
+            .findById(task.parentId)
+            .name;
+
+    TimeOfDay startTime = TimeOfDay(
+        hour: task.startDate.hour,
+        minute: task.startDate.minute
+    );
+
+    TimeOfDay endTime = TimeOfDay(
+        hour: task.endDate.hour,
+        minute: task.endDate.minute
+    );
+
     return Scaffold(
         backgroundColor: Color(0xfffffcf0),
         appBar: AppBar(
           title: Text(type == 'assignment' ? 'Assignment' : 'Exam'),
-          backgroundColor: mainColor,
+          backgroundColor: task.color,
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.create_rounded, color: Colors.white),
@@ -129,7 +147,157 @@ class _TaskScreenState extends State<TaskScreen> {
         ),
         body: _isLoading
             ? Center(child: CircularProgressIndicator())
-            : null
+            : SingleChildScrollView(
+                child: Column(
+                  children: [
+                    // Heading
+                    Container(
+                      width: double.infinity,
+                      height: 180,
+                      decoration: BoxDecoration(
+                        color: task.color,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(0),
+                            topRight: Radius.circular(0),
+                            bottomLeft: Radius.circular(30),
+                            bottomRight: Radius.circular(30)
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 3,
+                            blurRadius: 3,
+                            offset: Offset(0, 3), // changes position of shadow
+                          ),
+                        ],
+                      ),
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+                        child: Column(
+                          children: [
+                            Expanded(
+                                child: Text(task.name,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 36,
+                                        fontWeight: FontWeight.bold
+                                    )
+                                ),
+                                flex: 2,
+                            ),
+                            Expanded(
+                                child: Text(courseName,
+                                   style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                   )
+                                ),
+                                flex: 1,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    // Detail
+                    Center(
+                      child: Column(
+                        children: [
+                          // Start date
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: marginH, vertical: marginV),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    "Start date",
+                                    style: TextStyle(fontSize: 18, color: Colors.black),
+                                  ),
+                                  flex: 8,
+                                ),
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                        MaterialStateProperty.all(Colors.white)),
+                                    icon: Icon(Icons.calendar_today_outlined,
+                                        color: Colors.black),
+                                    label: Text(
+                                      DateFormat("yyyy-MM-dd").format(task.startDate),
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                    onPressed: (){}
+                                  ),
+                                  flex: 12,
+                                ),
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                          MaterialStateProperty.all(task.color)
+                                    ),
+                                    icon: Icon(Icons.access_time, color: Colors.white,),
+                                    label: Text(startTime.format(context),
+                                      style: TextStyle(color: Colors.white)
+                                    ),
+                                    onPressed: (){},
+                                  ),
+                                  flex: 8,
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // End date
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: marginH, vertical: marginV),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    "End date",
+                                    style: TextStyle(fontSize: 18, color: Colors.black),
+                                  ),
+                                  flex: 8,
+                                ),
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                          MaterialStateProperty.all(Colors.white)),
+                                      icon: Icon(Icons.calendar_today_outlined,
+                                          color: Colors.black),
+                                      label: Text(
+                                        DateFormat("yyyy-MM-dd").format(task.endDate),
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                      onPressed: (){}
+                                  ),
+                                  flex: 12,
+                                ),
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                        MaterialStateProperty.all(task.color)
+                                    ),
+                                    icon: Icon(Icons.access_time, color: Colors.white,),
+                                    label: Text(endTime.format(context),
+                                        style: TextStyle(color: Colors.white)
+                                    ),
+                                    onPressed: (){},
+                                  ),
+                                  flex: 8,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+            )
     );
   }
 }
