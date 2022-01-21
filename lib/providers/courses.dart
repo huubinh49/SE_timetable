@@ -48,6 +48,7 @@ class Courses with ChangeNotifier {
       return;
     }
     final url = Uri.parse(_makeRef('courses.json'));
+
     try {
       var response;
       if (previousGetRequestTime == null) {

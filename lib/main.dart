@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:timetable/providers/assignments.dart';
 import 'package:timetable/providers/auth.dart';
+import 'package:timetable/providers/exams.dart';
 import 'package:timetable/routes_app/route_management.dart';
 import 'package:timetable/views/authentication/sign_in_screen.dart';
 import 'package:timetable/providers/courses.dart';
@@ -22,10 +24,27 @@ class MyApp extends StatelessWidget {
             create: (ctx) => Auth(),
           ),
           ChangeNotifierProxyProvider<Auth, Courses>(
+            create: (ctx) => Courses('', '', []),
             update: (ctx, auth, previousCourses) => Courses(
                 auth.token,
                 auth.userId,
                 previousCourses == null ? [] : previousCourses.items),
+          ),
+          ChangeNotifierProxyProvider<Auth, Assignments>(
+            create: (ctx) => Assignments('', '', []),
+            update: (ctx, auth, previousAssignments) => Assignments(
+              auth.token,
+              auth.userId,
+              previousAssignments == null ? [] : previousAssignments.items,
+            )
+          ),
+          ChangeNotifierProxyProvider<Auth, Exams>(
+              create: (ctx) => Exams('', '', []),
+              update: (ctx, auth, previousAssignments) => Exams(
+                auth.token,
+                auth.userId,
+                previousAssignments == null ? [] : previousAssignments.items,
+              )
           ),
           ChangeNotifierProxyProvider<Auth, Timetables>(
               create: (context) => Timetables('', '', []),
