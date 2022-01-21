@@ -23,13 +23,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(
             create: (ctx) => Auth(),
           ),
-          ChangeNotifierProxyProvider<Auth, Courses>(
-            create: (ctx) => Courses('', '', []),
-            update: (ctx, auth, previousCourses) => Courses(
-                auth.token,
-                auth.userId,
-                previousCourses == null ? [] : previousCourses.items),
-          ),
+
           ChangeNotifierProxyProvider<Auth, Assignments>(
             create: (ctx) => Assignments('', '', []),
             update: (ctx, auth, previousAssignments) => Assignments(
@@ -49,7 +43,11 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProxyProvider<Auth, Timetables>(
               create: (context) => Timetables('', '', []),
               update: (context, auth, timetable) =>
-                  timetable..updateAuth(auth.token, auth.userId))
+                  timetable..updateAuth(auth.token, auth.userId)),
+          ChangeNotifierProxyProvider<Auth, Courses>(
+            create: (ctx) => Courses('', '', []),
+            update: (ctx, auth, course) => course..updateAuth(auth.token, auth.userId)
+          ),
         ],
         child: Consumer<Auth>(
           builder: (ctx, auth, _) => MaterialApp(

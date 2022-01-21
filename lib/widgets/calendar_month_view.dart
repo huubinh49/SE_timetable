@@ -17,7 +17,6 @@ class Event {
   final DateTime date;
   final TimeOfDay time;
   final int duration;
-
   const Event(this.title, this.location, this.date, this.time, this.duration);
 
   @override
@@ -250,7 +249,7 @@ class _CalendarMonthViewState extends State<CalendarMonthView> {
                 itemBuilder: (context, index) {
                   return GestureDetector(
                       onTap: () {
-                        Navigator.of(context).pushNamed(CourseScreen.routeName);
+                        Navigator.of(context).pushNamed(CourseScreen.routeName, arguments: courseIds[index]);
                       },
                       child: Container(
                         decoration: BoxDecoration(
