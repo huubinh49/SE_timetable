@@ -81,8 +81,11 @@ class CourseTile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('${DateFormat.E().format(date)}, ${startTime ~/ 60}:${startTime % 60}', style: tileSecondaryText),
-                        Text('${(duration/60.0).toStringAsFixed(1)}h', style: tileSecondaryText),
+                        Text(
+                            '${DateFormat.E().format(date)}, ${startTime ~/ 60}:${startTime % 60}',
+                            style: tileSecondaryText),
+                        Text('${(duration / 60.0).toStringAsFixed(1)}h',
+                            style: tileSecondaryText),
                       ],
                     ),
                   ],

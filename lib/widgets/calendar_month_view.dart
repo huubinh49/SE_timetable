@@ -3,9 +3,13 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:provider/provider.dart';
+
 import 'package:timetable/constants/colors.dart';
 import 'package:timetable/constants/texts.dart';
 import 'package:timetable/views/course/course_screen.dart';
+import 'package:timetable/providers/courses.dart';
+import 'package:timetable/providers/timetables.dart';
 
 class Event {
   final String title;
@@ -20,28 +24,6 @@ class Event {
   String toString() => title;
 }
 
-final kEvents = LinkedHashMap<DateTime, List<Event>>(
-  equals: isSameDay,
-  hashCode: getHashCode,
-)..addAll(_kEventSource);
-
-final _kEventSource = Map.fromIterable(List.generate(40, (index) => index),
-    key: (item) => DateTime.utc(kFirstDay.year, kFirstDay.month, item * 5),
-    value: (item) => List.generate(
-        item % 4 + 1,
-            (index) => Event(
-            'Event $item | ${index + 1}',
-            'Online',
-            DateTime.utc(kFirstDay.year, kFirstDay.month, item * 5),
-            TimeOfDay.now(),
-            50)))
-  ..addAll({
-    kToday: [
-      Event('Today\'s Event 1', 'Online', DateTime.now(), TimeOfDay.now(), 50),
-      Event('Today\'s Event 2', 'Online', DateTime.now(), TimeOfDay.now(), 50),
-    ],
-  });
-
 int getHashCode(DateTime key) {
   return key.day * 1000000 + key.month * 10000 + key.year;
 }
@@ -51,7 +33,7 @@ List<DateTime> daysInRange(DateTime first, DateTime last) {
   final dayCount = last.difference(first).inDays + 1;
   return List.generate(
     dayCount,
-        (index) => DateTime.utc(first.year, first.month, first.day + index),
+    (index) => DateTime.utc(first.year, first.month, first.day + index),
   );
 }
 
@@ -60,6 +42,10 @@ final kFirstDay = DateTime(kToday.year, kToday.month - 3, kToday.day);
 final kLastDay = DateTime(kToday.year, kToday.month + 3, kToday.day);
 
 class CalendarMonthView extends StatefulWidget {
+  final String timetableId;
+
+  CalendarMonthView(this.timetableId);
+
   @override
   State<CalendarMonthView> createState() => _CalendarMonthViewState();
 }
@@ -72,17 +58,24 @@ class _CalendarMonthViewState extends State<CalendarMonthView> {
   DateTime _selectedDay;
   DateTime _rangeStart;
   DateTime _rangeEnd;
+  bool _isFirstBuilt;
+
+  LinkedHashMap<DateTime, List<Event>> kEvents;
+  Map<DateTime, List<Event>> _kEventSource;
 
   @override
   void initState() {
+    print('CalendarMonthView::initState');
     super.initState();
     _focusedDay = DateTime.now();
     _selectedDay = _focusedDay;
-    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay));
+    _isFirstBuilt = true;
+    // _selectedEvents = ValueNotifier([]);
   }
 
   @override
   void dispose() {
+    print('CalendarMonthView::dispose');
     _selectedEvents.dispose();
     super.dispose();
   }
@@ -136,6 +129,59 @@ class _CalendarMonthViewState extends State<CalendarMonthView> {
 
   @override
   Widget build(BuildContext context) {
+    var courseIds =
+        Provider.of<Timetables>(context).findById(widget.timetableId).courseIds;
+    var courses = List.generate(courseIds.length,
+        (index) => Provider.of<Courses>(context).findById(courseIds[index]));
+
+    var weekDayMap = Map.fromIterable(List.generate(7, (index) => index + 1),
+        key: (element) => element.toString(), value: (element) => []);
+
+    for (final c in courses) {
+      weekDayMap[c.date.weekday.toString()].add(c);
+    }
+
+    _kEventSource = Map.fromIterable(daysInRange(kFirstDay, kLastDay),
+        key: (element) => element,
+        value: (element) => weekDayMap[element.weekday.toString()]
+            .map((e) => Event(
+                e.name,
+                e.room,
+                e.date,
+                TimeOfDay(hour: e.startTime ~/ 60, minute: e.startTime % 60),
+                e.duration))
+            .toList());
+
+    print('_kEventSource: $_kEventSource');
+    // _kEventSource = Map.fromIterable(List.generate(40, (index) => index),
+    //     key: (item) => DateTime.utc(kFirstDay.year, kFirstDay.month, item * 5),
+    //     value: (item) => List.generate(
+    //         item % 4 + 1,
+    //         (index) => Event(
+    //             'Event $item | ${index + 1}',
+    //             'Online',
+    //             DateTime.utc(kFirstDay.year, kFirstDay.month, item * 5),
+    //             TimeOfDay.now(),
+    //             50)))
+    //   ..addAll({
+    //     kToday: [
+    //       Event('Today\'s Event 1', 'Online', DateTime.now(), TimeOfDay.now(),
+    //           50),
+    //       Event('Today\'s Event 2', 'Online', DateTime.now(), TimeOfDay.now(),
+    //           50),
+    //     ],
+    //   });
+
+    kEvents = LinkedHashMap<DateTime, List<Event>>(
+      equals: isSameDay,
+      hashCode: getHashCode,
+    )..addAll(_kEventSource);
+    print('kEvents: $kEvents');
+
+    if (_isFirstBuilt) {
+      _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay));
+      _isFirstBuilt = false;
+    }
     return Column(
       children: [
         TableCalendar<Event>(
@@ -157,7 +203,7 @@ class _CalendarMonthViewState extends State<CalendarMonthView> {
             markerMargin: const EdgeInsets.only(right: 3),
             canMarkersOverflow: false,
             selectedDecoration:
-            BoxDecoration(color: mainColor, shape: BoxShape.rectangle),
+                BoxDecoration(color: mainColor, shape: BoxShape.rectangle),
             todayDecoration: BoxDecoration(color: Colors.green),
             withinRangeDecoration: BoxDecoration(
                 color: Colors.black,
@@ -231,13 +277,13 @@ class _CalendarMonthViewState extends State<CalendarMonthView> {
                                   padding: EdgeInsets.only(left: 15, right: 15),
                                   child: Row(
                                     mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Column(
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                         mainAxisAlignment:
-                                        MainAxisAlignment.center,
+                                            MainAxisAlignment.center,
                                         children: [
                                           Text('${value[index].title}'),
                                           RichText(
@@ -246,9 +292,9 @@ class _CalendarMonthViewState extends State<CalendarMonthView> {
                                                 WidgetSpan(
                                                   child: Padding(
                                                     padding:
-                                                    const EdgeInsets.only(
-                                                        right: 2.0,
-                                                        left: 0),
+                                                        const EdgeInsets.only(
+                                                            right: 2.0,
+                                                            left: 0),
                                                     child: Icon(
                                                       Icons
                                                           .location_on_outlined,
@@ -258,7 +304,7 @@ class _CalendarMonthViewState extends State<CalendarMonthView> {
                                                 ),
                                                 TextSpan(
                                                     text:
-                                                    '${value[index].location}',
+                                                        '${value[index].location}',
                                                     style: tileSecondaryText),
                                               ],
                                             ),
@@ -267,15 +313,15 @@ class _CalendarMonthViewState extends State<CalendarMonthView> {
                                       ),
                                       Column(
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.end,
+                                            CrossAxisAlignment.end,
                                         mainAxisAlignment:
-                                        MainAxisAlignment.center,
+                                            MainAxisAlignment.center,
                                         children: [
                                           Row(
                                             children: [
                                               Text(
                                                 DateFormat("EEE").format(
-                                                    value[index].date) +
+                                                        value[index].date) +
                                                     ", ",
                                                 style: tileSecondaryText,
                                               ),
