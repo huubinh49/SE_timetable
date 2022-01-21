@@ -1,27 +1,67 @@
 import 'package:flutter/material.dart';
 import '../models/course.dart';
+import 'dart:developer';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 class Courses with ChangeNotifier {
   List<Course> _items = [];
 
-  final String authToken;
-  final String userId;
+  String projectUrl = 'https://timetable-app-60033-default-rtdb.firebaseio.com';
+  String authToken;
+  String userId;
+  DateTime previousGetRequestTime;
 
   Courses(this.authToken, this.userId, this._items);
 
   List<Course> get items {
     return [..._items];
   }
-
+  /// Return a URL that references this path. This method assumes that you are in
+  /// /user/$userId
+  String _makeRef(String path) {
+    return '$projectUrl/user/$userId/$path?auth=$authToken';
+  }
+  /// Return true if authToken and userId is not empty.
+  bool _okToGo() {
+    return authToken != null &&
+        authToken != '' &&
+        userId != null &&
+        userId != '';
+  }
+  /// Update user authentication. If [newAuthToken] and [newUserId] are not
+  /// changed, then do nothing. Otherwise, the previously-fetched timetable data
+  /// will be removed to prepare for new user.
+  void updateAuth(String newAuthToken, String newUserId) {
+    log('Timetables: Updating new authentication ($newAuthToken, $newUserId)');
+    if (newAuthToken == authToken && newUserId == userId) {
+      return;
+    }
+    previousGetRequestTime = null;
+    _items = [];
+    authToken = newAuthToken;
+    userId = newUserId;
+  }
 
   Future<void> fetchAndSetDataCourses() async {
     // This tell Firebase that we want to filter by creator ID and only where it's equal to the userId
-    // => Only these entries should be return, đọc cái rule trên firebase t sửa giùm
-    final url = Uri.parse(
-        'https://timetable-app-60033-default-rtdb.firebaseio.com/user/$userId/courses.json?auth=$authToken&orderBy"creatorId"&equalTo="$userId"');
+    if (!_okToGo()) {
+      return;
+    }
+    final url = Uri.parse(_makeRef('courses.json'));
     try {
-      final response = await http.get(url);
+      var response;
+      if (previousGetRequestTime == null) {
+        response = await http.get(url);
+      } else {
+        response = await http.get(url, headers: {
+          'If-Modified-Since': previousGetRequestTime.toIso8601String()
+        });
+      }
+      previousGetRequestTime = DateTime.now();
+      if (response.statusCode == 304) {
+        log('Courses: No change since $previousGetRequestTime');
+        return;
+      }
       // Convert json to flutter data by json.decode()
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       final List<Course> loadedCourses = [];
@@ -51,8 +91,7 @@ class Courses with ChangeNotifier {
 
   // Make this function is Future to show the indicator when the user add new course and wait the response
   Future<void> addCourse(Course course) async {
-    final url = Uri.parse(
-        'https://timetable-app-60033-default-rtdb.firebaseio.com/user/$userId/courses.json?auth=$authToken');
+    final url = Uri.parse(_makeRef('courses.json'));
     try {
       // Define url and kind of data to post in http.post(url, kind data)
       // Convert data to json by json.encode({})
@@ -100,9 +139,7 @@ class Courses with ChangeNotifier {
   Future<void> updateCourse(String id, Course newCourse) async {
     final courseIndex = _items.indexWhere((value) => value.id == id);
     if (courseIndex >= 0) {
-      final url = Uri.parse(
-          'https://timetable-app-60033-default-rtdb.firebaseio.com/user/$userId/courses/$id.json?auth=$authToken');
-      final timestamp = newCourse.date;
+      final url = Uri.parse(_makeRef('courses/$id.json'));
       await http.patch(url,
           body: json.encode({
             'name': newCourse.name,
@@ -122,13 +159,23 @@ class Courses with ChangeNotifier {
     }
   }
 
-  void deleteCourse(String id) {
-    final url = Uri.parse(
-        'https://timetable-app-60033-default-rtdb.firebaseio.com/user/$userId/courses/$id.json?auth=$authToken');
-    http.delete(url).then((value) {
+  void deleteCourse(String id) async {
+    var idx = items.indexWhere((element) => element.id == id);
+    if (idx < 0) {
+      return;
+    }
+
+    try {
+    final url = Uri.parse(_makeRef('courses/$id.json'));
+    await http.delete(url).then((value) {
       _items.removeWhere((course) => course.id == id);
       notifyListeners();
     });
+    items.removeAt(idx);
+    notifyListeners();
+    } catch (e) {
+      throw e;
+    }
   }
 
   Course findById(String id) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:timetable/constants/colors.dart';
 import 'package:timetable/providers/courses.dart';
+import 'package:timetable/views/timetable/util.dart';
 import 'package:timetable/widgets/course_tile.dart';
 import 'package:timetable/widgets/app_drawer.dart';
 import 'create_course_screen.dart';
@@ -26,7 +27,8 @@ class _CourseListScreenState extends State<CourseListScreen> {
       });
       Provider.of<Courses>(context)
           .fetchAndSetDataCourses()
-          .catchError((error) => {})
+          .catchError((e) => Util.getInstance()
+          .showAlertDialogOk(context, 'Error', 'An error occur!'))
           .whenComplete(() => {
                 setState(() {
                   _isLoading = false;
