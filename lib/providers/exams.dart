@@ -17,7 +17,7 @@ class Exams with ChangeNotifier {
 
   Future<void> fetchAndSetDataExams() async {
     final url = Uri.parse(
-        'https://timetable-app-60033-default-rtdb.firebaseio.com/user/$userId/exams.json?auth=$authToken&orderBy"creatorId"&equalTo="$userId"');
+        'https://timetable-app-60033-default-rtdb.firebaseio.com/user/$userId/exams.json?auth=$authToken');
     try {
       final response = await http.get(url);
       // Convert json to flutter data by json.decode()
@@ -37,8 +37,9 @@ class Exams with ChangeNotifier {
           importantLevel: data['importantLevel'],
           state: data['state'],
           note: data['note'],
-          color: Color(data['color']).withOpacity(1),
+          color: Color(data['color']),//.withOpacity(1),
           room: data['room'],
+          parentId: data['parentId']
         ));
       });
       _items = loadedExams;
@@ -68,22 +69,26 @@ class Exams with ChangeNotifier {
             'state': exam.state,
             'note': exam.note,
             'room': exam.room,
+            'parentId': exam.parentId,
+            'color': exam.color.value,
           },
         ),
       );
       // Use async function to wait for post data and get the response => Can get ID from the response
       // ID = json.decode(response.body)['name']
       final newExam = Exam(
-        json.decode(response.body)['name'],
-        exam.name,
-        exam.startDate,
-        exam.endDate,
-        notificationTime: exam.notificationTime,
-        topic: exam.topic,
-        importantLevel: exam.importantLevel,
-        state: exam.state,
-        note: exam.note,
-        room: exam.room,
+          json.decode(response.body)['name'],
+          exam.name,
+          exam.startDate,
+          exam.endDate,
+          notificationTime: exam.notificationTime,
+          topic: exam.topic,
+          importantLevel: exam.importantLevel,
+          state: exam.state,
+          note: exam.note,
+          room: exam.room,
+          parentId: exam.parentId,
+          color: exam.color,
       );
       debugPrint(newExam.id);
       _items.insert(0, newExam);
@@ -109,8 +114,9 @@ class Exams with ChangeNotifier {
             'importantLevel': newExam.importantLevel,
             'state': newExam.state,
             'note': newExam.note,
-            'color': newExam.color,
             'room': newExam.room,
+            'parentId': newExam.parentId,
+            'color': newExam.color.value,
           }));
       _items[examIndex] = newExam;
       notifyListeners();

@@ -1,5 +1,5 @@
+import 'package:intl/intl.dart';
 import 'dart:ui';
-
 import 'package:timetable/models/abstract_thing.dart';
 
 abstract class Task extends AbstractThing {
@@ -52,15 +52,15 @@ abstract class Task extends AbstractThing {
   Map<String, dynamic> toMap() => {
         'id': id,
         'name': name,
-        'startDate': formatDate(startDate),
-        'endDate': formatDate(endDate),
-        'notificationTime': notificationTime,
+        'startDate': DateFormat('yyyy-MM-dd HH:mm').format(startDate),
+        'endDate': DateFormat('yyyy-MM-dd HH:mm').format(endDate),
+        'notificationTime': '',
         'topic': topic,
         'note': note,
         'importantLevel': importantLevel,
         'state': state,
         'parentId': parentId,
-        'color': color
+        'color': color.value,
       };
 
   String get type;

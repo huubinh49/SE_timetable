@@ -17,7 +17,7 @@ class Assignments with ChangeNotifier {
 
   Future<void> fetchAndSetDataAssignments() async {
     final url = Uri.parse(
-        'https://timetable-app-60033-default-rtdb.firebaseio.com/user/$userId/assignments.json?auth=$authToken&orderBy"creatorId"&equalTo="$userId"');
+        'https://timetable-app-60033-default-rtdb.firebaseio.com/user/$userId/assignments.json?auth=$authToken');
     try {
       final response = await http.get(url);
       // Convert json to flutter data by json.decode()
@@ -28,17 +28,19 @@ class Assignments with ChangeNotifier {
       }
       extractedData.forEach((assignmentId, data) {
         loadedAssignments.add(Assignment(
-            assignmentId,
-            data['name'],
-            DateTime.parse(data['startDate']),
-            DateTime.parse(data['endDate']),
-            notificationTime: DateTime.parse(data['notificationTime']),
-            topic: data['topic'],
-            importantLevel: data['importantLevel'],
-            state: data['state'],
-            note: data['note'],
-            progress: data['progress'],
-            isGroupProject: data['isGroupProject']
+          assignmentId,
+          data['name'],
+          DateTime.parse(data['startDate']),
+          DateTime.parse(data['endDate']),
+          notificationTime: DateTime.parse(data['notificationTime']),
+          topic: data['topic'],
+          importantLevel: data['importantLevel'],
+          state: data['state'],
+          note: data['note'],
+          progress: data['progress'],
+          isGroupProject: data['isGroupProject'],
+          color: Color(data['color']),
+          parentId: data['parentId'],
         ));
       });
       _items = loadedAssignments;
@@ -68,7 +70,9 @@ class Assignments with ChangeNotifier {
             'state': assignment.state,
             'note': assignment.note,
             'progress': assignment.progress,
-            'isGroupProject': assignment.isGroupProject
+            'isGroupProject': assignment.isGroupProject,
+            'parentId': assignment.parentId,
+            'color': assignment.color.value,
           },
         ),
       );
@@ -85,7 +89,9 @@ class Assignments with ChangeNotifier {
           state: assignment.state,
           note: assignment.note,
           progress: assignment.progress,
-          isGroupProject: assignment.isGroupProject
+          isGroupProject: assignment.isGroupProject,
+          parentId: assignment.parentId,
+          color: assignment.color,
       );
       debugPrint(newAssignment.id);
       _items.insert(0, newAssignment);
@@ -112,7 +118,9 @@ class Assignments with ChangeNotifier {
             'state': newAssignment.state,
             'note': newAssignment.note,
             'progress': newAssignment.progress,
-            'isGroupProject': newAssignment.isGroupProject
+            'isGroupProject': newAssignment.isGroupProject,
+            'parentId': newAssignment.parentId,
+            'color': newAssignment.color.value,
           }));
       _items[assignmentIndex] = newAssignment;
       notifyListeners();

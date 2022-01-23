@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:timetable/constants/texts.dart';
 import 'package:timetable/models/task.dart';
 import 'package:timetable/views/task/task_screen.dart';
+import 'package:timetable/views/task/create_task_screen.dart';
 
 class TaskTile extends StatelessWidget {
   final String id;
@@ -10,7 +11,8 @@ class TaskTile extends StatelessWidget {
   final DateTime endDate;
   final bool state;
   final Color color;
-  final String parentId;
+  final String courseName;
+  final String type;
 
   TaskTile({
     this.id,
@@ -18,14 +20,17 @@ class TaskTile extends StatelessWidget {
     this.endDate,
     this.state,
     this.color,
-    this.parentId,
+    this.courseName,
+    this.type,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pushNamed(TaskScreen.routeName, arguments: id);
+        Navigator.of(context).pushNamed(
+            TaskScreen.routeName,
+            arguments: {'taskId': id, 'type': type});
       },
       child: Container(
         decoration: BoxDecoration(
@@ -70,7 +75,7 @@ class TaskTile extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              TextSpan(text: parentId, style: tileSecondaryText),
+                              TextSpan(text: courseName, style: tileSecondaryText),
                             ],
                           ),
                         )

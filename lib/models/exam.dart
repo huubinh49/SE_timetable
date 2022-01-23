@@ -30,12 +30,12 @@ class Exam extends Task {
           map['name'],
           DateTime.parse(map['startDate']),
           DateTime.parse(map['endDate']),
-          notificationTime: map['notificationTime'],
+          notificationTime: DateTime.now(),
           importantLevel: map['importantLevel'],
           state: map['state'],
           note: map['note'],
           parentId: map['parentId'],
-          color: map['color']
+          color: Color(map['color']),
       ) {
     room = map['room'];
   }

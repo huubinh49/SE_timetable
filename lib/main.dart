@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:timetable/providers/assignments.dart';
 import 'package:timetable/providers/auth.dart';
+import 'package:timetable/providers/exams.dart';
 import 'package:timetable/routes_app/route_management.dart';
 import 'package:timetable/views/authentication/sign_in_screen.dart';
 import 'package:timetable/providers/courses.dart';
@@ -21,16 +23,31 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(
             create: (ctx) => Auth(),
           ),
-          ChangeNotifierProxyProvider<Auth, Courses>(
-            update: (ctx, auth, previousCourses) => Courses(
+
+          ChangeNotifierProxyProvider<Auth, Assignments>(
+            create: (ctx) => Assignments('', '', []),
+            update: (ctx, auth, previousAssignments) => Assignments(
+              auth.token,
+              auth.userId,
+              previousAssignments == null ? [] : previousAssignments.items,
+            )
+          ),
+          ChangeNotifierProxyProvider<Auth, Exams>(
+              create: (ctx) => Exams('', '', []),
+              update: (ctx, auth, previousAssignments) => Exams(
                 auth.token,
                 auth.userId,
-                previousCourses == null ? [] : previousCourses.items),
+                previousAssignments == null ? [] : previousAssignments.items,
+              )
           ),
           ChangeNotifierProxyProvider<Auth, Timetables>(
               create: (context) => Timetables('', '', []),
               update: (context, auth, timetable) =>
-                  timetable..updateAuth(auth.token, auth.userId))
+                  timetable..updateAuth(auth.token, auth.userId)),
+          ChangeNotifierProxyProvider<Auth, Courses>(
+            create: (ctx) => Courses('', '', []),
+            update: (ctx, auth, course) => course..updateAuth(auth.token, auth.userId)
+          ),
         ],
         child: Consumer<Auth>(
           builder: (ctx, auth, _) => MaterialApp(
