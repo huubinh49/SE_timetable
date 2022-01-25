@@ -149,48 +149,51 @@ class _TimetableScreenState extends State<TimetableScreen> {
                                       children: [
                                         Column(
                                           children: [
-                                            DropdownButtonHideUnderline(
-                                              child: DropdownButton2(
-                                                buttonHeight: inputHeight,
-                                                itemHeight: inputHeight,
-                                                buttonWidth: 60,
-                                                itemWidth: 100,
-                                                buttonPadding:
-                                                    const EdgeInsets.only(
-                                                        left: 15, right: 5),
-                                                buttonDecoration: BoxDecoration(
-                                                  color: Color(0xFFC4C4C4),
-                                                ),
-                                                hint: Text(
-                                                  _selectedValue,
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.black,
+                                            Container(
+                                              width: 80,
+                                              child: DropdownButtonHideUnderline(
+                                                child: DropdownButton2(
+                                                  buttonHeight: inputHeight,
+                                                  itemHeight: inputHeight,
+                                                  buttonWidth: 60,
+                                                  itemWidth: 100,
+                                                  buttonPadding:
+                                                      const EdgeInsets.only(
+                                                          left: 15, right: 5),
+                                                  buttonDecoration: BoxDecoration(
+                                                    color: Color(0xFFC4C4C4),
                                                   ),
+                                                  hint: Text(
+                                                    _selectedValue,
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                  items: _items
+                                                      .map((item) =>
+                                                          DropdownMenuItem<
+                                                              String>(
+                                                            value: item,
+                                                            child: Text(
+                                                              item,
+                                                              style:
+                                                                  const TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Colors
+                                                                          .black),
+                                                            ),
+                                                          ))
+                                                      .toList(),
+                                                  value: _selectedValue,
+                                                  onChanged: (value) {
+                                                    setState(() {
+                                                      _selectedValue =
+                                                          value as String;
+                                                    });
+                                                  },
                                                 ),
-                                                items: _items
-                                                    .map((item) =>
-                                                        DropdownMenuItem<
-                                                            String>(
-                                                          value: item,
-                                                          child: Text(
-                                                            item,
-                                                            style:
-                                                                const TextStyle(
-                                                                    fontSize:
-                                                                        14,
-                                                                    color: Colors
-                                                                        .black),
-                                                          ),
-                                                        ))
-                                                    .toList(),
-                                                value: _selectedValue,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    _selectedValue =
-                                                        value as String;
-                                                  });
-                                                },
                                               ),
                                             ),
                                           ],

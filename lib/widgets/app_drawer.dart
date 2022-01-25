@@ -25,16 +25,15 @@ class AppDrawer extends StatelessWidget {
               color: lightblack,
             ),
             child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   CircleAvatar(
-                    backgroundColor: Colors.grey,
+                    backgroundImage: AssetImage("assets/logo.png"),
                     radius: 50,
+                    backgroundColor: lightblack,
                   ),
                   SizedBox(height: 25),
-                  Text("Nam Mai", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
-                  SizedBox(height: 5),
-                  Text("mdnam2410@gmail.com", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14)),
+                  Text("Wellcome to Study Life", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22)),
                 ]
             ),
           ),

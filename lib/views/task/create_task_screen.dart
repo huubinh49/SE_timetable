@@ -192,7 +192,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     return Scaffold(
       backgroundColor: Color(0xfffffcf0),
       appBar: AppBar(
-        title: Text((taskId == null ? 'Create ' : 'Edit ') + _attributes['type']),
+        title: Text((taskId == null ? 'Create ' : 'Edit ') + 'task'),
         backgroundColor: taskColor,
         actions: <Widget>[
           IconButton(
